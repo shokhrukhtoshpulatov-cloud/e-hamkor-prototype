@@ -33,7 +33,7 @@
   /* Каждая страница — отдельный документ, поэтому состояние панели тоже нужно
      запоминать: иначе она разворачивалась бы обратно при каждом переходе. */
   EH.state = { role: role, roleObj: roleObj, lang: lang,
-               theme: get(LS.theme, "light"), side: get(LS.side, "wide") };
+               theme: get(LS.theme, "dark"), side: get(LS.side, "wide") };
 
   EH.t = function (key) {
     var d = EH.i18n[EH.state.lang] || {};
