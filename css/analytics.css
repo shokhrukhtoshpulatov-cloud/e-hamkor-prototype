@@ -1,0 +1,214 @@
+/* ============================================================================
+   analytics.css — страница «Дашборд» (сводка по выводу через крипто-активы).
+   Подключается только на этой странице (pageCss в @meta). Цвета — токены theme.css.
+   ========================================================================= */
+
+/* ---------- Заголовок раздела «крипто-активы» ------------------------------ */
+.an-sec-head {
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  margin: 30px 0 14px; padding-top: 22px; border-top: 1px solid var(--border);
+}
+.an-sec-head h2 { font-size: 18px; letter-spacing: -.01em; }
+.an-sec-head .muted { font-size: 13px; margin-top: 4px; }
+
+/* ---------- KPI: пять плиток в ряд ---------------------------------------- */
+.an-kpis { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.an-kpis .stat-val { font-size: 25px; }
+.an-kpis .stat-val small { font-size: 13px; font-weight: 500; color: var(--text-soft); margin-left: 4px; letter-spacing: 0; }
+.an-kpis .stat-foot { font-size: 12px; color: var(--text-faint); }
+.an-kpis .stat-foot b { color: var(--ink); font-weight: 600; font-family: var(--mono); }
+/* плитка KPI переключает показатель карты — активная обведена */
+.an-kpis .stat[data-metric] { cursor: pointer; transition: box-shadow .15s, border-color .15s; }
+.an-kpis .stat[data-metric]:hover { border-color: var(--border-strong); }
+.an-kpis .stat.is-cur { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-bg); }
+
+/* ---------- Карта (соты) --------------------------------------------------- */
+/* «нет данных» — цвет базовой суши карты мира: регион есть, но показателя нет */
+:root { --uz-na: var(--surface-3); }
+:root[data-theme="dark"] { --uz-na: rgba(255,255,255,.13); }
+
+.an-map-head { align-items: center; }
+.an-map-body { padding: 8px 18px 4px; }
+.uzmap-host { position: relative; }
+.uzmap { width: 100%; height: auto; display: block; overflow: visible; }
+
+.uzmap .uz-hex {
+  stroke: none; pointer-events: none;
+  transition: fill .45s ease, opacity .2s ease, filter .15s ease;
+}
+.uzmap .uz-hex.is-hover { filter: brightness(1.12); }
+.uzmap .uz-hex.is-dim { opacity: .28; }
+
+/* появление волной с запада на восток — только при первом показе */
+.uzmap.is-enter .uz-hex { animation: uzHexIn .6s cubic-bezier(.2,.8,.3,1) both; transform-box: fill-box; transform-origin: center; }
+@keyframes uzHexIn { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: none; } }
+
+/* Контуры регионов прозрачные: ловят мышь по всей площади (между сотами — зазор)
+   и дают тонкую границу цвета фона, чтобы соседние регионы одного класса не слипались */
+.uzmap .uz-hits .uz-r {
+  fill: transparent; stroke: var(--panel); stroke-width: 1.6; stroke-linejoin: round;
+  cursor: pointer; outline: none; transition: stroke .12s, stroke-width .12s;
+}
+.uzmap .uz-hits .uz-r:hover, .uzmap .uz-hits .uz-r:focus-visible { stroke: var(--text-soft); stroke-width: 1.8; }
+.uzmap .uz-hits .uz-r.is-sel { stroke: var(--ink); stroke-width: 2.4; }
+
+.uzmap .uz-lbl, .uzmap .uz-val {
+  text-anchor: middle; pointer-events: none;
+  paint-order: stroke; stroke: var(--panel); stroke-width: 3.4px; stroke-linejoin: round;
+  font-family: var(--font); transition: opacity .2s;
+}
+.uzmap .uz-lbl { font-size: 12px; font-weight: 600; fill: var(--ink); }
+.uzmap .uz-val { font-size: 11px; font-weight: 500; fill: var(--text-soft); font-family: var(--mono); letter-spacing: .01em; }
+.uzmap text.is-dim { opacity: .35; }
+
+/* выноска города Ташкента: кружок с пульсом — это узел маршрутизации */
+.uzmap .uz-callout line { stroke: var(--text-faint); stroke-width: 1; stroke-dasharray: 2 3; }
+.uzmap .uz-callout .uz-dot { stroke: var(--panel); stroke-width: 2.5; cursor: pointer; transition: fill .45s ease; }
+.uzmap .uz-callout.is-sel .uz-dot { stroke: var(--ink); }
+.uzmap .uz-callout .uz-lbl, .uzmap .uz-callout .uz-val { text-anchor: end; }
+.uzmap .uz-callout.is-dim { opacity: .35; }
+.uzmap .uz-ping {
+  fill: none; stroke: var(--c1); stroke-width: 2; pointer-events: none;
+  transform-box: fill-box; transform-origin: center;
+  animation: uzPing 2.4s cubic-bezier(.2,.6,.4,1) infinite;
+}
+@keyframes uzPing { 0% { transform: scale(1); opacity: .6; } 75%, 100% { transform: scale(2.3); opacity: 0; } }
+
+.uz-tip { transform: translate(-50%, -115%); min-width: 170px; }
+.uz-tip .uz-tip-n { font-family: var(--font); font-size: 13px; }
+.uz-tip .uz-tip-s { color: var(--text-faint); font-weight: 500; font-size: 11.5px; margin-left: 4px; }
+
+.uz-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; }
+.uz-lg { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--text-soft); font-family: var(--mono); }
+.uz-lg i { width: 14px; height: 10px; border-radius: 3px; flex: none; box-shadow: inset 0 0 0 1px var(--border); }
+.uz-lg i.is-na { background: var(--uz-na); }
+
+/* сегмент-контрол показателей не должен ломать шапку карточки на узких экранах */
+.an-metric { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+.an-metric::-webkit-scrollbar { display: none; }
+
+/* ---------- Панель региона ------------------------------------------------- */
+.an-detail { display: flex; flex-direction: column; }
+.an-detail .card-head h2 { display: flex; align-items: center; gap: 8px; }
+.an-rank { font-size: 12px; color: var(--text-faint); margin-top: 3px; }
+.an-kv { display: flex; flex-direction: column; }
+.an-kv-row {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: baseline;
+  padding: 10px 18px; border-bottom: 1px dashed var(--border);
+}
+.an-kv-row:last-child { border-bottom: 0; }
+.an-kv-row.is-cur { background: var(--accent-bg); }
+.an-kv-k { font-size: 12.5px; color: var(--text-soft); }
+.an-kv-v { font-family: var(--mono); font-size: 14px; font-weight: 600; color: var(--ink); text-align: right; white-space: nowrap; }
+.an-kv-s { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; }
+.an-kv-s .bar-track { height: 4px; }
+.an-kv-s span { font-size: 11px; color: var(--text-faint); font-family: var(--mono); min-width: 42px; text-align: right; }
+.an-na { color: var(--text-faint); font-weight: 500; font-family: var(--font); font-size: 12.5px; }
+
+.an-sec { padding: 14px 18px; border-top: 1px solid var(--border); }
+.an-sec-t { font-size: 10px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 10px; }
+
+/* воронка «всего → карты → крипто» */
+.an-funnel { display: flex; flex-direction: column; gap: 8px; }
+.an-fn { display: grid; grid-template-columns: 96px minmax(0, 1fr) 58px; gap: 10px; align-items: center; font-size: 12px; }
+.an-fn-l { color: var(--text-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.an-fn-b { height: 18px; border-radius: 5px; background: var(--surface-2); overflow: hidden; }
+.an-fn-b i { display: block; height: 100%; border-radius: 5px; background: var(--c1); min-width: 2px; transition: width .5s cubic-bezier(.2,.8,.3,1); }
+.an-fn-v { font-family: var(--mono); font-weight: 600; color: var(--ink); text-align: right; font-size: 12px; }
+.an-fn-p { grid-column: 2 / -1; font-size: 11px; color: var(--text-faint); margin-top: -4px; }
+
+.an-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.an-chip {
+  display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 9px 0 4px;
+  border: 1px solid var(--border); border-radius: var(--r-pill); background: var(--surface);
+  font-size: 12px; color: var(--ink); font-weight: 500;
+}
+
+/* ---------- Рейтинг -------------------------------------------------------- */
+.an-rank-list { display: flex; flex-direction: column; padding: 6px 0; }
+.an-rk {
+  display: grid; grid-template-columns: 22px minmax(88px, 128px) minmax(0, 1fr) auto; gap: 10px; align-items: center;
+  padding: 7px 18px; border: 0; background: none; width: 100%; text-align: left; cursor: pointer;
+  font-size: 12.5px; color: var(--text); transition: background .12s;
+}
+.an-rk:hover { background: var(--surface); }
+.an-rk.is-sel { background: var(--accent-bg); }
+.an-rk-i { font-family: var(--mono); font-size: 11px; color: var(--text-faint); text-align: right; }
+.an-rk-n { color: var(--ink); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.an-rk-b { height: 8px; border-radius: var(--r-pill); background: var(--surface-2); overflow: hidden; }
+.an-rk-b i { display: block; height: 100%; border-radius: var(--r-pill); min-width: 2px; transition: width .5s cubic-bezier(.2,.8,.3,1); }
+.an-rk-v { font-family: var(--mono); font-weight: 600; color: var(--ink); font-size: 12px; white-space: nowrap; text-align: right; }
+
+/* ---------- Биржи ---------------------------------------------------------- */
+.an-ex-list { display: flex; flex-direction: column; padding: 4px 0; }
+.an-ex {
+  display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; gap: 4px 11px; align-items: center;
+  padding: 8px 18px; border: 0; background: none; width: 100%; text-align: left; cursor: pointer;
+  transition: background .12s;
+}
+.an-ex:hover { background: var(--surface); }
+/* .btn задаёт display:inline-flex и перебивает браузерное [hidden] */
+#anExClear[hidden] { display: none; }
+.an-ex.is-on { background: var(--accent-bg); }
+.an-ex-n { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: 13px; color: var(--ink); font-weight: 500; }
+.an-ex-n .pill { height: 18px; font-size: 10px; padding: 0 7px; }
+.an-ex-c { font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--ink); white-space: nowrap; }
+.an-ex-c i { font-style: normal; color: var(--text-faint); font-weight: 500; }
+.an-ex-b { grid-column: 2 / -1; height: 5px; border-radius: var(--r-pill); background: var(--surface-2); overflow: hidden; }
+.an-ex-b i { display: block; height: 100%; border-radius: var(--r-pill); background: var(--c2); }
+
+/* ---------- Распределение и качество --------------------------------------- */
+.an-donut { display: flex; align-items: center; gap: 18px; padding: 14px 18px; }
+/* .chart растягивается на 100% ширины и выталкивал легенду за край карточки */
+.an-donut .chart { width: 210px; height: 210px; flex: none; }
+.an-donut-l { display: flex; flex-direction: column; gap: 9px; min-width: 0; flex: 1; }
+.an-dl { display: grid; grid-template-columns: 10px minmax(0, 1fr) auto; gap: 8px; align-items: center; font-size: 12.5px; }
+.an-dl i { width: 10px; height: 10px; border-radius: 3px; }
+.an-dl span { color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.an-dl b { font-family: var(--mono); font-weight: 600; color: var(--ink); font-size: 12px; }
+
+.an-notes { display: flex; flex-direction: column; }
+.an-note {
+  display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 11px; align-items: flex-start;
+  padding: 12px 18px; border-bottom: 1px dashed var(--border); font-size: 12.5px; line-height: 1.5; color: var(--text);
+}
+.an-note:last-child { border-bottom: 0; }
+.an-note-ic {
+  width: 28px; height: 28px; border-radius: var(--r-sm); display: flex; align-items: center; justify-content: center;
+  background: var(--surface-2); color: var(--text-soft);
+}
+.an-note-ic .ic { width: 15px; height: 15px; }
+.an-note.is-warn .an-note-ic { background: var(--warn-bg); color: var(--warn); }
+.an-note.is-info .an-note-ic { background: var(--accent-bg); color: var(--accent); }
+.an-note.is-ok .an-note-ic { background: var(--success-bg); color: var(--success); }
+.an-note b { color: var(--ink); font-weight: 600; }
+
+/* ---------- Таблица -------------------------------------------------------- */
+.an-tbl th.is-sort { cursor: pointer; user-select: none; }
+.an-tbl th.is-sort:hover { color: var(--ink); }
+.an-tbl th .srt { display: inline-block; width: 10px; margin-left: 3px; color: var(--accent); }
+.an-tbl td.num, .an-tbl th.t-r { text-align: right; }
+.an-tbl tbody tr { cursor: pointer; }
+.an-tbl tbody tr.is-sel { background: var(--accent-bg); }
+.an-tbl tfoot td {
+  padding: 12px 14px; border-top: 1px solid var(--border-strong);
+  font-weight: 700; color: var(--ink); background: var(--panel-2);
+}
+.an-tbl .an-logos { display: flex; gap: 3px; align-items: center; }
+.an-tbl .an-logos .more { font-size: 11px; color: var(--text-faint); margin-left: 3px; font-family: var(--mono); }
+.an-share { display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
+.an-share .bar-track { width: 54px; height: 4px; }
+
+/* ---------- Адаптив -------------------------------------------------------- */
+@media (max-width: 1280px) {
+  .an-kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 900px) {
+  .an-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .an-donut { flex-direction: column; align-items: stretch; }
+  .uzmap .uz-val { display: none; }
+}
+@media (max-width: 560px) {
+  .an-kpis { grid-template-columns: minmax(0, 1fr); }
+  .an-rk { grid-template-columns: 18px minmax(70px, 96px) minmax(0, 1fr) auto; padding: 7px 14px; }
+}

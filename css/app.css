@@ -1,0 +1,741 @@
+/* ============================================================================
+   app.css — оболочка приложения: сайдбар, топбар, сетки, экранные блоки.
+   ========================================================================= */
+
+.app {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+  min-height: 100vh;
+  /* Сворачивание в полосу — это смена ширины колонки сетки; без перехода
+     сайдбар схлопывался рывком вместе со всей страницей. */
+  transition: grid-template-columns var(--t-slow) var(--ease-soft);
+}
+/* Бургер и крестик нужны только там, где сайдбар выезжающий. */
+.side-toggle { display: none; }
+/* Кнопка «развернуть» живёт в топбаре и появляется только у свёрнутой панели. */
+#sideExpand { display: none; }
+
+/* ---------- Свёрнутый сайдбар — полоса с иконками ------------------------- */
+/* Принципиально не «ширина 0»: навигация остаётся на экране и кликабельна,
+   прячутся только подписи. Подписи уезжают в title (ставится в shell.js). */
+@media (min-width: 901px) {
+  .app.is-rail { grid-template-columns: var(--sidebar-rail) minmax(0, 1fr); }
+  .app.is-rail #sideExpand { display: inline-flex; }
+
+  .app.is-rail .side-top { justify-content: center; padding: 0; }
+  /* в полосе шириной 72 px надпись не помещается — остаётся только знак.
+     html в начале селектора — чтобы перебить правила темной темы той же длины */
+  html .app.is-rail .brand-lockup img { display: none; }
+  html .app.is-rail .brand-lockup .is-mark { display: block; }
+  html .app.is-rail .brand-lockup { height: 34px; }
+  .app.is-rail #sideRail,
+  .app.is-rail .side-org-b,
+  .app.is-rail .side-org .ic,
+  .app.is-rail .nav-title,
+  .app.is-rail .plan-card,
+  .app.is-rail .side-nav .nav-item > span:not(.nav-badge),
+  .app.is-rail .side-mini .nav-item > span { display: none; }
+
+  .app.is-rail .side-org { justify-content: center; padding: 9px 0; margin: 12px 10px 4px; }
+  .app.is-rail .side-nav { padding: 8px 10px 12px; }
+  .app.is-rail .nav-item { justify-content: center; padding: 9px 0; gap: 0; }
+  .app.is-rail .nav-group { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .app.is-rail .nav-group:first-child { margin-top: 4px; padding-top: 0; border-top: 0; }
+  .app.is-rail .side-bottom { padding: 10px; }
+
+  /* счётчик не помещается строкой — становится меткой в углу иконки */
+  .app.is-rail .nav-badge {
+    position: absolute; top: 2px; right: 8px;
+    min-width: 16px; height: 16px; padding: 0 4px;
+    font-size: 9.5px; border: 1.5px solid var(--panel);
+  }
+}
+
+/* ---------- Сайдбар ------------------------------------------------------- */
+.side {
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh;
+  overflow: hidden;
+}
+.side-top {
+  height: var(--topbar-h);
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border);
+  flex: none;
+}
+.brand { display: flex; align-items: center; gap: 10px; min-width: 0; text-decoration: none; }
+/* Фирменный логотип: знак + надпись. Надпись у заказчика белая, поэтому для
+   светлой темы есть вариант с тёмной надписью — показываем нужный по data-theme. */
+.brand-lockup { display: inline-flex; align-items: center; height: 38px; flex: none; }
+.brand-lockup img { height: 100%; width: auto; display: block; }
+.brand-lockup .is-dark, .brand-lockup .is-mark { display: none; }
+:root[data-theme="dark"] .brand-lockup .is-light { display: none; }
+:root[data-theme="dark"] .brand-lockup .is-dark { display: block; }
+.brand-lockup.lg { height: 46px; }
+.side-top .btn-icon { margin-left: auto; }
+
+.side-org {
+  margin: 12px 12px 4px;
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 11px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  cursor: default;
+}
+.side-org .ava { width: 26px; height: 26px; font-size: 10px; border-radius: 7px; }
+.side-org-b { min-width: 0; flex: 1; display: flex; flex-direction: column; }
+.side-org-n { font-size: 12.5px; font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.side-org-r { font-size: 11px; color: var(--text-faint); }
+.side-org .ic { width: 14px; height: 14px; color: var(--text-faint); }
+
+.side-nav { flex: 1; overflow-y: auto; padding: 8px 12px 12px; }
+.nav-group { margin-top: 14px; }
+.nav-group:first-child { margin-top: 6px; }
+.nav-title {
+  padding: 0 11px 7px;
+  font-size: 9.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--text-faint);
+}
+.nav-item {
+  display: flex; align-items: center; gap: 11px;
+  padding: 8px 11px; margin-bottom: 1px;
+  border-radius: var(--r-sm);
+  color: var(--text); font-size: 13.5px; font-weight: 500;
+  text-decoration: none; position: relative;
+  transition: background var(--t) var(--ease), color var(--t) var(--ease),
+              box-shadow var(--t) var(--ease), padding var(--t-slow) var(--ease-soft);
+}
+.nav-item .ic { width: 18px; height: 18px; color: var(--text-soft); flex: none; }
+.nav-item:hover { background: var(--surface-2); color: var(--ink); }
+.nav-item:hover .ic { color: var(--ink); }
+.nav-item.is-on {
+  background: var(--surface-2); color: var(--ink); font-weight: 600;
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+.nav-item.is-on .ic { color: var(--accent); }
+.nav-badge {
+  margin-left: auto; min-width: 20px; height: 19px; padding: 0 6px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: var(--r-pill);
+  background: var(--accent-bg); color: var(--accent);
+  font-size: 10.5px; font-weight: 700;
+  transition: background var(--t) var(--ease), color var(--t) var(--ease);
+}
+.nav-badge.is-danger { background: var(--danger-bg); color: var(--danger); }
+
+.side-bottom { flex: none; padding: 12px; border-top: 1px solid var(--border); }
+.plan-card {
+  padding: 13px; border-radius: var(--r-sm);
+  background: var(--surface); border: 1px solid var(--border);
+  margin-bottom: 10px;
+}
+.plan-top { display: flex; align-items: center; gap: 7px; margin-bottom: 4px; }
+.plan-top .ic { width: 14px; height: 14px; color: var(--accent); }
+.plan-name { font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink); }
+.plan-sub { font-size: 11px; color: var(--text-faint); margin-bottom: 9px; }
+.plan-nums { display: flex; align-items: baseline; justify-content: space-between; font-size: 11.5px; margin-bottom: 6px; }
+.plan-nums .l { font-family: var(--mono); color: var(--ink); font-weight: 600; }
+.plan-nums .l i { color: var(--text-faint); font-style: normal; font-weight: 500; }
+.plan-nums .r { color: var(--text-faint); font-weight: 600; }
+
+.side-mini { display: flex; flex-direction: column; gap: 1px; }
+.side-mini .nav-item { font-size: 13px; padding: 7px 11px; }
+
+/* ---------- Главная колонка ---------------------------------------------- */
+.main { min-width: 0; display: flex; flex-direction: column; }
+
+.topbar {
+  height: var(--topbar-h); flex: none;
+  position: sticky; top: 0; z-index: 50;
+  display: flex; align-items: center; gap: 14px;
+  padding: 0 22px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+}
+.crumbs { display: flex; align-items: center; gap: 7px; font-size: 13px; color: var(--text-faint); min-width: 0; }
+.crumbs a { color: var(--text-faint); }
+.crumbs a:hover { color: var(--ink); }
+.crumbs .ic { width: 13px; height: 13px; }
+.crumbs .cur { color: var(--ink); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.topbar-sp { flex: 1; }
+.topbar-r { display: flex; align-items: center; gap: 8px; flex: none; }
+
+.gsearch { position: relative; width: 260px; }
+/* Рост поля равен росту кнопок справа (36px): они стоят в одну линию.
+   Подтягивается поле, а не кнопки — колокольчик, язык, тема и карточка
+   профиля уже согласованы между собой, и их четверо против одного. */
+.gsearch .input { height: 36px; padding-left: 32px; padding-right: 46px; font-size: 12.5px; background: var(--surface); border-color: transparent; }
+.gsearch .input:hover { border-color: var(--border); }
+/* Значок и клавиша центрируются, а не отсчитываются от верха: при следующей
+   правке роста поля они остались бы на прежнем месте. */
+/* Только прямые дети: панель выдачи лежит внутри .gsearch и сама является
+   containing block, поэтому вложенный селектор утаскивал иконки результатов
+   в абсолютное позиционирование — все они собирались в одной точке. */
+.gsearch > .ic { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: var(--text-faint); pointer-events: none; }
+.gsearch > .kbd { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); pointer-events: none; }
+
+/* Панель глобального поиска. Выдача сгруппирована по сущностям, а не свалена
+   в один список: «EH-2026-0417» и «Binance» — разные намерения, и по группе
+   видно, куда приведёт переход. Подвал остаётся на месте при прокрутке —
+   в нём и подсказка по клавишам, и выход в реестр со всем запросом. */
+.gs-pop {
+  position: absolute; z-index: 60; top: calc(100% + 8px); right: 0;
+  width: 440px; max-width: calc(100vw - 28px);
+  max-height: min(70vh, 520px); overflow-y: auto;
+  padding: 5px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: var(--sh-lg);
+  transform-origin: top right;
+  opacity: 1; transform: none;
+  transition: opacity var(--t) var(--ease), transform var(--t) var(--ease),
+              display var(--t) allow-discrete;
+}
+@starting-style {
+  .gs-pop:not([hidden]) { opacity: 0; transform: translateY(-8px) scale(.98); }
+}
+.gs-pop[hidden] {
+  display: none; opacity: 0; pointer-events: none;
+  transform: translateY(-8px) scale(.98);
+}
+.gs-sec {
+  padding: 8px 10px 5px; font-size: 10px; font-weight: 600;
+  letter-spacing: .09em; text-transform: uppercase; color: var(--text-faint);
+}
+.gs-item {
+  display: grid; grid-template-columns: 28px minmax(0, 1fr) auto;
+  align-items: center; gap: 10px;
+  padding: 7px 9px; border-radius: var(--r-sm);
+  color: var(--text);
+  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+}
+/* Подсветку строки ведёт клавиатура: мышь лишь переставляет ту же метку,
+   поэтому отдельного :hover нет — две разные подсветки сбивали бы с толку. */
+.gs-item.is-on { background: var(--accent-bg); }
+.gs-ic {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface-2); color: var(--text-soft);
+  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+}
+.gs-ic.is-ava { background: none; }
+.gs-ic .ava { width: 26px; height: 26px; font-size: 9.5px; }
+.gs-item.is-on .gs-ic { background: var(--panel); color: var(--accent); }
+.gs-b { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.gs-t {
+  font-size: 13px; font-weight: 600; color: var(--ink);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.gs-d {
+  font-size: 11.5px; color: var(--text-soft);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.gs-d .dot-sep { margin: 0 6px; vertical-align: middle; }
+.gs-d .flagchip { margin-right: 5px; }
+.gs-tail { flex: none; }
+.gs-hl {
+  background: var(--accent-bg); color: var(--accent);
+  border-radius: 3px; padding: 0 1px; font-weight: 700;
+}
+.gs-empty {
+  display: flex; flex-direction: column; align-items: center; gap: 7px;
+  padding: 26px 16px; text-align: center;
+}
+.gs-empty .ic { width: 26px; height: 26px; color: var(--text-faint); stroke-width: 1.3; }
+.gs-empty-t { font-size: 13px; font-weight: 600; color: var(--ink); }
+.gs-empty-d { font-size: 12px; color: var(--text-faint); max-width: 300px; }
+.gs-foot {
+  position: sticky; bottom: -5px;
+  display: flex; align-items: center; justify-content: flex-end;
+  margin: 5px -5px -5px; padding: 9px 12px;
+  background: var(--panel); border-top: 1px solid var(--border);
+}
+.gs-more {
+  display: inline-flex; align-items: center; gap: 5px; flex: none;
+  font-size: 11.5px; font-weight: 600; color: var(--accent);
+}
+.gs-more:hover { color: var(--accent-hover); }
+.gs-more .ic { width: 13px; height: 13px; }
+
+.userchip {
+  display: flex; align-items: center; gap: 9px;
+  height: 36px; padding: 0 11px 0 4px;
+  border: 1px solid var(--border); border-radius: var(--r-pill);
+  background: var(--panel); cursor: pointer;
+  transition: background var(--t) var(--ease), border-color var(--t) var(--ease),
+              transform var(--t-press) var(--ease);
+}
+.userchip:hover { background: var(--surface-2); }
+.userchip:active { transform: translateY(1px); }
+.userchip .ava { width: 28px; height: 28px; font-size: 10px; }
+.userchip .un { font-size: 12.5px; font-weight: 600; color: var(--ink); white-space: nowrap; }
+.userchip .ic { width: 14px; height: 14px; color: var(--text-faint); }
+
+/* Язык живёт рядом с темой: обе настройки одного уровня и одной формы —
+   иконка в топбаре. Текущий код языка подписан в углу, выбор — в дропдауне. */
+.lang-btn[aria-expanded="true"] { background: var(--surface-2); color: var(--ink); }
+.lang-btn.is-locked { opacity: .65; transition: opacity var(--t) var(--ease); }
+.menu-lang { min-width: 186px; }
+.menu-lang .menu-item { justify-content: space-between; gap: 12px; padding: 8px 11px; }
+.lang-name { font-size: 13px; font-weight: 500; }
+.menu-item.is-on .lang-name { font-weight: 600; }
+.lang-r { display: flex; align-items: center; gap: 8px; }
+.lang-code { font-size: 11px; font-weight: 600; color: var(--text-faint); transition: color var(--t) var(--ease); }
+.menu-item.is-on .lang-code { color: var(--accent); }
+/* У партнёра язык зафиксирован: недоступные варианты гасим, но оставляем
+   кликабельными — по клику объясняем почему, а не молчим. */
+#langMenu [aria-disabled="true"] { opacity: .45; }
+.menu-note {
+  display: flex; align-items: flex-start; gap: 7px;
+  padding: 7px 10px 4px; color: var(--text-faint); font-size: 11.5px; line-height: 1.35;
+}
+.menu-note .ic { width: 13px; height: 13px; flex: none; margin-top: 1px; }
+
+/* ---------- Уведомления --------------------------------------------------- */
+.bell-wrap { position: relative; }
+.bell-dot {
+  position: absolute; top: 3px; right: 1px;
+  min-width: 16px; height: 16px; padding: 0 4px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: var(--r-pill); background: var(--danger); border: 1.5px solid var(--panel);
+  color: #fff; font-size: 9.5px; font-weight: 700; line-height: 1;
+  pointer-events: none;
+}
+.menu-notif { width: 380px; max-width: calc(100vw - 28px); padding: 0; }
+.notif-head {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 14px; border-bottom: 1px solid var(--border);
+}
+.notif-h { font-size: 13px; font-weight: 700; color: var(--ink); }
+.notif-n {
+  min-width: 18px; height: 18px; padding: 0 5px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: var(--r-pill); background: var(--danger-bg); color: var(--danger);
+  font-size: 10.5px; font-weight: 700;
+}
+.notif-mark {
+  margin-left: auto; border: 0; background: none; padding: 0;
+  color: var(--accent); font: inherit; font-size: 12px; font-weight: 600; cursor: pointer;
+}
+.notif-mark:hover { color: var(--accent-hover); text-decoration: underline; }
+
+.notif-list { max-height: 384px; overflow-y: auto; padding: 5px; }
+.notif-item {
+  display: grid; grid-template-columns: 30px minmax(0, 1fr) auto;
+  align-items: start; gap: 10px;
+  padding: 9px 10px; border-radius: var(--r-sm);
+  color: var(--text); transition: background var(--t-fast) var(--ease);
+}
+.notif-item:hover { background: var(--surface-2); }
+/* Непрочитанное помечаем точкой, а не заливкой строки: в свежей ленте
+   непрочитано всё, и заливка превратила бы панель в синее полотно. */
+.notif-item.is-new .notif-t { color: var(--ink); }
+.notif-item:not(.is-new) .notif-t { color: var(--text-soft); font-weight: 500; }
+.notif-item:not(.is-new) .notif-ic { opacity: .65; }
+.notif-ic {
+  width: 30px; height: 30px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface-2); color: var(--text-soft);
+}
+.notif-ic.tone-danger  { background: var(--danger-bg);  color: var(--danger);  }
+.notif-ic.tone-warn    { background: var(--warn-bg);    color: var(--warn);    }
+.notif-ic.tone-success { background: var(--success-bg); color: var(--success); }
+.notif-ic.tone-info    { background: var(--accent-bg);  color: var(--accent);  }
+.notif-b { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.notif-t { font-size: 12.8px; font-weight: 600; color: var(--ink); line-height: 1.35; }
+.notif-item.is-new .notif-t::after {
+  content: ""; display: inline-block; vertical-align: middle;
+  width: 6px; height: 6px; margin-left: 6px; border-radius: 50%; background: var(--accent);
+}
+.notif-d {
+  font-size: 11.5px; color: var(--text-soft); line-height: 1.35;
+  overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+  -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+}
+.notif-time { font-size: 10.5px; color: var(--text-faint); white-space: nowrap; padding-top: 2px; }
+.notif-empty {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: 26px 16px; color: var(--text-soft); font-size: 12.5px; text-align: center;
+}
+.notif-empty .ic { width: 26px; height: 26px; color: var(--text-faint); }
+.notif-all {
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  padding: 11px; border-top: 1px solid var(--border);
+  font-size: 12.5px; font-weight: 600; color: var(--accent);
+  transition: background var(--t) var(--ease), color var(--t) var(--ease);
+}
+.notif-all:hover { background: var(--surface-2); }
+.notif-all .ic { width: 15px; height: 15px; }
+
+/* ---------- Контент ------------------------------------------------------- */
+.page { padding: 22px; max-width: var(--maxw); width: 100%; margin: 0 auto; flex: 1; }
+.page-wide { max-width: none; }
+
+.page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
+.page-head-l { min-width: 0; }
+.page-head h1 { margin-bottom: 5px; }
+.page-head .sub { font-size: 13.5px; color: var(--text-soft); max-width: 70ch; }
+.page-head-r { display: flex; align-items: center; gap: 9px; flex: none; }
+/* Шапка страницы — такой же ряд органов управления, как строка фильтров,
+   только тиром выше: рядом стоит основное действие в полный рост, и мелкая
+   кнопка возле него читается как чужая. Задано ряду, а не странице:
+   фильтр периода приходит сюда из общей карточки динамики (js/trend.js). */
+.page-head-r .btn { height: 36px; border-radius: var(--r-sm); }
+.page-head-r .btn-icon { width: 36px; }
+.page-date { font-size: 12.5px; color: var(--text-faint); display: flex; align-items: center; gap: 7px; }
+.page-date .ic { width: 15px; height: 15px; }
+
+/* сетки */
+/* Колонка по умолчанию — minmax(0,1fr): без неё одиночная колонка получает ширину
+   max-content, и широкая таблица внутри распирает страницу по горизонтали. */
+.grid { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); }
+.g-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.g-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.g-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.g-21 { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
+.g-12 { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
+.g-31 { grid-template-columns: minmax(0, 3fr) minmax(0, 1fr); }
+.mt-14 { margin-top: 14px; }
+.mt-20 { margin-top: 20px; }
+.stack { display: flex; flex-direction: column; gap: 14px; }
+.row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.row-tight { display: flex; align-items: center; gap: 7px; }
+.spread { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+
+/* заголовок карточки в стиле референса: метка сверху, крупное число под ней */
+.hero-metric { display: flex; flex-direction: column; gap: 6px; }
+.hero-metric .big-num { font-size: 27px; }
+
+/* панель фильтров над таблицей */
+.toolbar {
+  display: flex; align-items: center; gap: 9px; flex-wrap: wrap;
+  padding: 13px 18px; border-bottom: 1px solid var(--border);
+}
+.toolbar .search { width: 240px; }
+.toolbar .search .input { height: 34px; font-size: 12.5px; }
+.toolbar .select { width: auto; min-width: 160px; height: 34px; font-size: 12.5px; }
+.toolbar .sel { min-width: 160px; }
+/* Строка фильтров держит один рост и одно скругление у всех органов
+   управления: поле, список и кнопка стоят в ряд, и разница в четыре пиксела
+   высоты или три пиксела радиуса читается как сбой вёрстки. Задано тулбару,
+   а не каждой кнопке: btn-sm страницы ставят ради мелкого шрифта и узких
+   отступов, и терять их из-за роста незачем. */
+.toolbar .btn { height: 34px; border-radius: var(--r-sm); }
+.toolbar .btn-icon { width: 34px; }
+.toolbar-sp { flex: 1; }
+
+/* ---------- Экран входа --------------------------------------------------- */
+.doc-meta { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px 22px; }
+.doc-meta .k { font-size: 11.5px; color: var(--text-faint); margin-bottom: 3px; }
+.doc-meta .v { font-size: 13.5px; color: var(--ink); font-weight: 500; }
+
+/* ---------- Календарь ----------------------------------------------------- */
+.cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--r-sm); overflow: hidden; }
+.cal-dow { background: var(--panel-2); padding: 8px 10px; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-faint); text-align: center; }
+.cal-day { background: var(--panel); min-height: 96px; padding: 7px 8px; display: flex; flex-direction: column; gap: 5px; }
+.cal-day.is-out { background: var(--panel-2); }
+.cal-day.is-today .cal-n { background: var(--accent-strong); color: #fff; }
+.cal-n { align-self: flex-start; min-width: 22px; height: 22px; padding: 0 6px; display: inline-flex; align-items: center; justify-content: center; border-radius: var(--r-pill); font-size: 11.5px; font-weight: 600; color: var(--text-soft); font-family: var(--mono); }
+.cal-day.is-out .cal-n { color: var(--text-faint); opacity: .55; }
+.cal-ev {
+  font-size: 10.5px; padding: 3px 6px; border-radius: 5px;
+  background: var(--accent-bg); color: var(--accent);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-weight: 600; cursor: pointer; text-decoration: none; display: block;
+  transition: background var(--t) var(--ease), color var(--t) var(--ease),
+              box-shadow var(--t) var(--ease);
+}
+.cal-ev:hover { box-shadow: inset 0 0 0 1px currentColor; }
+.cal-ev.is-warn { background: var(--warn-bg); color: var(--warn); }
+.cal-ev.is-danger { background: var(--danger-bg); color: var(--danger); }
+
+/* ---------- Редактор документа ------------------------------------------- */
+.editor-wrap { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 14px; align-items: start; }
+.paper {
+  background: #fff; color: #16181c;
+  border-radius: var(--r-xs);
+  padding: 48px 56px;
+  box-shadow: var(--sh-md);
+  font-size: 13.5px; line-height: 1.7;
+  min-height: 620px;
+  border: 1px solid var(--border);
+}
+.paper h4 { color: #16181c; }
+.paper-head { display: flex; align-items: flex-start; gap: 16px; border-bottom: 2px solid #16181c; padding-bottom: 14px; margin-bottom: 20px; }
+.paper-head img { width: 52px; height: 52px; flex: none; }
+.paper-org { font-size: 12px; line-height: 1.45; color: #3b4250; }
+.paper-org b { display: block; font-size: 13.5px; color: #16181c; letter-spacing: .01em; }
+.paper-no { margin-left: auto; text-align: right; font-size: 11.5px; color: #6b7480; }
+.paper p { margin-bottom: 12px; }
+.paper ol, .paper ul { margin: 0 0 12px; padding-left: 22px; }
+.paper li { margin-bottom: 6px; }
+.paper-sign { margin-top: 36px; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+.stamp {
+  width: 118px; height: 118px; border-radius: 50%; flex: none;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  border: 2px dashed #b6bec9; color: #98a1ad;
+  font-size: 9.5px; font-weight: 700; text-align: center; letter-spacing: .04em;
+  text-transform: uppercase; padding: 12px; transform: rotate(-7deg);
+  transition: border-color .3s var(--ease), color .3s var(--ease),
+              background .3s var(--ease);
+}
+.stamp .ic { width: 22px; height: 22px; }
+.stamp.is-signed { border-style: solid; border-color: #2f8f4e; color: #2f8f4e; background: rgba(47,143,78,.05); }
+.editor-side { position: sticky; top: calc(var(--topbar-h) + 14px); }
+.editor-tools { display: flex; align-items: center; gap: 6px; padding: 9px 12px; flex-wrap: wrap; }
+.editor-tools .sep { width: 1px; height: 18px; background: var(--border); margin: 0 3px; }
+
+/* ---------- Мастер создания ---------------------------------------------- */
+.wizard { display: grid; grid-template-columns: 290px minmax(0, 1fr); gap: 14px; align-items: start; }
+.wsteps { display: flex; flex-direction: column; }
+.wstep {
+  display: block; padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  transition: background var(--t-slow) var(--ease), box-shadow var(--t-slow) var(--ease);
+}
+.wstep .st, .wstep .tt, .wstep .dd { transition: color var(--t-slow) var(--ease); }
+.wstep:last-child { border-bottom: 0; }
+.wstep .st { font-size: 9.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 5px; }
+.wstep .tt { font-size: 13.5px; font-weight: 600; color: var(--text-soft); }
+.wstep .dd { font-size: 11.5px; color: var(--text-faint); margin-top: 3px; line-height: 1.4; }
+.wstep.is-on { background: var(--surface); box-shadow: inset 2px 0 0 var(--accent); }
+.wstep.is-on .st { color: var(--accent); }
+.wstep.is-on .tt { color: var(--ink); }
+.wstep.is-done .tt { color: var(--ink); }
+.wstep.is-done .st { color: var(--success); }
+.wform { max-width: 560px; margin: 0 auto; padding: 32px 24px; }
+.wform-ic {
+  width: 46px; height: 46px; border-radius: var(--r-md);
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface-2); color: var(--text-soft); margin-bottom: 16px;
+}
+.wform-ic .ic { width: 22px; height: 22px; }
+.wform h2 { font-size: 20px; margin-bottom: 6px; letter-spacing: -.02em; }
+.wform .lead { font-size: 13.5px; color: var(--text-soft); margin-bottom: 24px; }
+.wgrid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; }
+
+/* ---------- Карточки-тайлы (типы документов, роли) ----------------------- */
+.tiles { display: grid; gap: 10px; }
+.tile {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 13px 14px; text-align: left;
+  border: 1px solid var(--border-strong); border-radius: var(--r-sm);
+  background: var(--panel); cursor: pointer; width: 100%;
+  transition: border-color var(--t) var(--ease), background var(--t) var(--ease),
+              box-shadow var(--t) var(--ease), transform var(--t-press) var(--ease);
+}
+.tile:hover { border-color: var(--accent); background: var(--accent-bg); }
+.tile:active { transform: translateY(1px); }
+.tile.is-on { border-color: var(--accent); background: var(--accent-bg); box-shadow: 0 0 0 3px var(--accent-bg); }
+.tile-ic {
+  width: 34px; height: 34px; border-radius: var(--r-sm); flex: none;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface-2); color: var(--text-soft);
+  transition: background var(--t) var(--ease), color var(--t) var(--ease);
+}
+.tile.is-on .tile-ic { background: var(--accent); color: #fff; }
+.tile-b { min-width: 0; }
+.tile-t { font-size: 13.5px; font-weight: 600; color: var(--ink); }
+.tile-d { font-size: 12px; color: var(--text-faint); margin-top: 2px; line-height: 1.4; }
+
+/* ---------- Мониторинг регионов ------------------------------------------ */
+.reg-scroll { overflow-x: auto; }
+.reg-row { display: grid; grid-template-columns: minmax(0,1.6fr) repeat(4, 62px) minmax(120px, 1fr); gap: 12px; align-items: center; padding: 12px 18px; border-bottom: 1px dashed var(--border); min-width: 620px; }
+.reg-row:last-child { border-bottom: 0; }
+.reg-row.head { border-bottom: 1px solid var(--border); padding-top: 10px; padding-bottom: 10px; }
+.reg-row.head > * { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text-faint); }
+.reg-n { display: flex; align-items: center; gap: 9px; font-size: 13.5px; color: var(--ink); font-weight: 500; min-width: 0; }
+.reg-n .ic { width: 15px; height: 15px; color: var(--text-faint); }
+.reg-v { font-family: var(--mono); font-size: 13px; text-align: center; }
+.reg-bar { display: flex; align-items: center; gap: 9px; }
+.reg-bar .bar-track { flex: 1; }
+.reg-bar .pc { font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--ink); min-width: 38px; text-align: right; }
+
+/* ---------- Файлы / документы списком ------------------------------------ */
+.frow {
+  display: flex; align-items: center; gap: 12px; padding: 12px 18px;
+  border-bottom: 1px dashed var(--border);
+  transition: background var(--t-fast) var(--ease);
+}
+.frow:last-child { border-bottom: 0; }
+/* список в две колонки — когда карточка идёт на всю ширину страницы */
+.frow-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); }
+.frow-grid .frow { border-bottom: 1px dashed var(--border); }
+.frow-grid .frow:nth-last-child(-n+1) { border-bottom: 0; }
+.frow:hover { background: var(--surface); }
+.frow-ic { width: 34px; height: 34px; border-radius: var(--r-sm); display: flex; align-items: center; justify-content: center; background: var(--surface-2); color: var(--text-soft); flex: none; }
+.frow-b { min-width: 0; flex: 1; display: flex; flex-direction: column; }
+.frow-ic.risk-warn   { background: var(--warn-bg);   color: var(--warn); }
+.frow-ic.risk-danger { background: var(--danger-bg); color: var(--danger); }
+.frow-t { font-size: 13.5px; color: var(--ink); font-weight: 500; }
+.frow-m { font-size: 11.5px; color: var(--text-faint); margin-top: 2px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.frow-m .num { font-size: 11px; }
+
+/* ---------- Справка ------------------------------------------------------- */
+.steps-num { counter-reset: s; display: flex; flex-direction: column; gap: 14px; }
+.step-num { display: grid; grid-template-columns: 30px 1fr; gap: 13px; }
+.step-num .n {
+  width: 30px; height: 30px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--accent-bg); color: var(--accent);
+  font-size: 12px; font-weight: 700; font-family: var(--mono);
+}
+.step-num .t { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 3px; }
+.step-num .d { font-size: 13px; color: var(--text-soft); line-height: 1.55; }
+
+/* ---------- Ошибка 404 ---------------------------------------------------- */
+.err-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+.err-box { text-align: center; max-width: 430px; }
+.err-code { font-family: var(--mono); font-size: 76px; font-weight: 700; color: var(--ink); letter-spacing: -.03em; line-height: 1; margin-bottom: 12px; }
+.err-box h1 { margin-bottom: 8px; }
+.err-box p { color: var(--text-soft); margin-bottom: 20px; }
+
+/* ---------- Настройки ----------------------------------------------------- */
+/* Разделов много, и одной длинной лентой они не читаются: слева — оглавление,
+   справа — только активный раздел. Состояние держится в хеше, поэтому на
+   конкретный раздел можно дать ссылку (сайдбар ведёт на #iface). */
+.set { display: grid; grid-template-columns: 238px minmax(0, 1fr); gap: 14px; align-items: start; }
+.set-nav { padding: 8px; position: sticky; top: calc(var(--topbar-h) + 22px); }
+.set-nav button {
+  display: flex; align-items: center; gap: 11px; width: 100%;
+  padding: 8px 11px; margin-bottom: 1px;
+  border: 0; background: none; border-radius: var(--r-sm);
+  color: var(--text); font-size: 13.5px; font-weight: 500; font-family: inherit;
+  text-align: left; cursor: pointer;
+  transition: background var(--t) var(--ease), color var(--t) var(--ease),
+              box-shadow var(--t) var(--ease);
+}
+.set-nav button .ic { width: 18px; height: 18px; color: var(--text-soft); flex: none; }
+.set-nav button:hover { background: var(--surface-2); color: var(--ink); }
+.set-nav button.is-on {
+  background: var(--surface-2); color: var(--ink); font-weight: 600;
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+.set-nav button.is-on .ic { color: var(--accent); }
+.set-sec[hidden] { display: none; }
+
+/* строка настройки: слева смысл и пояснение, справа один орган управления */
+.opt { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 13px 0; }
+.opt:first-child { padding-top: 0; }
+.opt:last-child { padding-bottom: 0; }
+.opt + .opt { border-top: 1px solid var(--border); }
+.opt-b { min-width: 0; }
+.opt-t { font-size: 13.5px; font-weight: 500; color: var(--ink); }
+.opt-d { font-size: 12px; color: var(--text-faint); margin-top: 3px; line-height: 1.4; max-width: 64ch; }
+.opt-c { flex: none; display: flex; align-items: center; gap: 8px; }
+.opt-c .select, .opt-c .sel { min-width: 176px; }
+.opt-c .input { width: 176px; }
+.opt-c .input[type="time"], .opt-c .input[type="date"] { width: 132px; }
+/* строка с широким полем (текст подписи, период замещения) складывается вниз */
+.opt-col { display: block; }
+.opt-col .opt-c { margin-top: 10px; display: flex; flex-wrap: wrap; }
+.opt-col .opt-c .input { width: 100%; }
+/* зависимая группа: выключенный родитель гасит её, но оставляет на месте */
+.opt-dep { transition: opacity var(--t-slow) var(--ease); }
+.opt-dep.is-off { opacity: .45; pointer-events: none; }
+
+/* сеанс: устройство, адрес, время — и кнопка завершения */
+.sess { display: flex; align-items: center; gap: 12px; padding: 12px 0; }
+.sess + .sess { border-top: 1px solid var(--border); }
+.sess-ic {
+  width: 34px; height: 34px; border-radius: var(--r-sm); flex: none;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface); color: var(--text-soft);
+}
+.sess-ic .ic { width: 17px; height: 17px; }
+.sess-b { min-width: 0; flex: 1; }
+.sess-t { font-size: 13.5px; font-weight: 500; color: var(--ink); }
+.sess-m { font-size: 12px; color: var(--text-faint); margin-top: 2px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.sess.is-gone { display: none; }
+
+/* ---------- Плотность интерфейса ------------------------------------------ */
+/* Компактный режим не меняет типографику — только вертикальные отступы:
+   на ноутбуке в реестр помещается на треть больше строк. */
+:root[data-density="compact"] { --topbar-h: 56px; }
+[data-density="compact"] .page { padding: 16px; }
+[data-density="compact"] .grid, [data-density="compact"] .stack { gap: 10px; }
+[data-density="compact"] .card-head { padding: 12px 14px; }
+[data-density="compact"] .card-body { padding: 13px 14px; }
+[data-density="compact"] .card-foot { padding: 10px 14px; }
+[data-density="compact"] .tbl tbody td { padding: 8px 12px; }
+[data-density="compact"] .tbl thead th { padding: 8px 12px; }
+[data-density="compact"] .qrow { padding: 9px 14px; }
+[data-density="compact"] .toolbar { padding: 10px 14px; }
+[data-density="compact"] .opt { padding: 10px 0; }
+[data-density="compact"] .cal-day { min-height: 76px; }
+
+/* ---------- Сокращённые анимации ------------------------------------------ */
+[data-motion="off"] .reveal { animation: none; }
+[data-motion="off"] .side { transition: none; }
+/* Переходы тоже входят в «сокращённые анимации»: иначе тумблер гасил появление
+   блоков, но оставлял едущие панели, подсветки и сворачивание сайдбара. */
+[data-motion="off"] *, [data-motion="off"] *::before, [data-motion="off"] *::after {
+  animation-duration: .001ms !important;
+  animation-delay: 0s !important;
+  transition-duration: .001ms !important;
+  transition-delay: 0s !important;
+}
+
+/* ---------- Адаптив ------------------------------------------------------- */
+@media (max-width: 1180px) {
+  .g-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .g-21, .g-12, .g-31 { grid-template-columns: minmax(0, 1fr); }
+  .editor-wrap, .wizard { grid-template-columns: minmax(0, 1fr); }
+  .editor-side { position: static; }
+}
+@media (max-width: 900px) {
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .side {
+    position: fixed; z-index: 100; width: var(--sidebar-w);
+    transform: translateX(-100%); transition: transform var(--t-slow) var(--ease-soft);
+    box-shadow: var(--sh-lg);
+  }
+  .app.is-open .side { transform: none; }
+  .side-toggle { display: inline-flex; }
+  /* На узком экране панель и так выезжающая — сворачивать нечего */
+  #sideRail, #sideExpand { display: none; }
+  .scrim { position: fixed; inset: 0; background: var(--scrim); z-index: 99; animation: fadeIn var(--t-slow) var(--ease) both; }
+  .gsearch { display: none; }
+  .g-3, .g-2 { grid-template-columns: minmax(0, 1fr); }
+  .set { grid-template-columns: minmax(0, 1fr); }
+  .set-nav { position: static; display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+  .set-nav::-webkit-scrollbar { display: none; }
+  .set-nav button { width: auto; white-space: nowrap; margin-bottom: 0; }
+  .page { padding: 16px; }
+  .paper { padding: 28px 22px; }
+  .wform { padding: 22px 16px; }
+}
+/* На узком экране правая часть строки очереди не помещается в колонку auto
+   и распирала всю карточку — переносим её на вторую строку. */
+@media (max-width: 720px) {
+  .qrow { grid-template-columns: 34px minmax(0, 1fr); row-gap: 8px; }
+  .qrow-r { grid-column: 2; flex-wrap: wrap; justify-content: flex-start; }
+  .page-head-r { flex-wrap: wrap; }
+  .toolbar .search, .toolbar .select, .toolbar .sel { width: 100%; min-width: 0; }
+  /* на узком экране поле уходит под подпись, а не жмёт её; тумблер остаётся справа */
+  .opt-wide { flex-direction: column; align-items: stretch; }
+  .opt-wide .opt-c { justify-content: flex-start; margin-top: 10px; }
+  .opt-wide .opt-c .select, .opt-wide .opt-c .sel, .opt-wide .opt-c .input { width: 100%; min-width: 0; }
+  .opt .seg { flex-wrap: wrap; }
+  .editor-tools { row-gap: 8px; }
+}
+
+@media (max-width: 640px) {
+  .g-4 { grid-template-columns: minmax(0, 1fr); }
+  .wgrid, .doc-meta { grid-template-columns: minmax(0, 1fr); }
+  .userchip .un { display: none; }
+  .topbar { padding: 0 14px; gap: 8px; }
+  /* На узком экране панель не помещается под колокольчиком — растягиваем
+     её по ширине экрана, иначе правый край уезжает за вьюпорт. */
+  .menu-notif {
+    position: fixed; top: calc(var(--topbar-h) - 6px);
+    left: 14px; right: 14px; width: auto; max-width: none;
+  }
+  .cal-day { min-height: 68px; }
+}

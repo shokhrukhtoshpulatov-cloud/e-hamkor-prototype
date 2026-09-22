@@ -1,0 +1,265 @@
+/* ============================================================================
+   theme.css — ТОКЕНЫ + две темы + база + анимации.
+   Единственное место, где разрешены hex-значения цвета.
+   Компоненты не знают, какая тема активна: обе объявляют один набор имён.
+   ========================================================================= */
+
+/* ---------- Светлая тема (по умолчанию) ---------------------------------- */
+:root {
+  --bg:            #eef1f5;
+  --bg-deep:       #e3e8ee;
+  --panel:         #ffffff;
+  --panel-2:       #f6f8fa;
+  --surface:       #f3f5f8;
+  --surface-2:     #eaeef3;
+  --surface-3:     #e0e5ec;
+  --border:        #e5e8ec;
+  --border-strong: #d3d8de;
+  --ink:           #1a1d21;
+  --text:          #48515c;
+  --text-soft:     #6b7480;
+  --text-faint:    #99a2ad;
+
+  --accent:        #2688eb;
+  --accent-strong: #1e7bd6;
+  --accent-hover:  #1670c9;
+  --accent-bg:     rgba(38,136,235,.10);
+  --accent-ink:    #ffffff;
+
+  --success:       #3f9e3f;
+  --success-bg:    rgba(63,158,63,.11);
+  --warn:          #e8930c;
+  --warn-bg:       rgba(232,147,12,.13);
+  --danger:        #e64646;
+  --danger-bg:     rgba(230,70,70,.11);
+  --violet:        #6a5cff;
+  --violet-bg:     rgba(106,92,255,.11);
+  --gold:          #c8901a;
+  --gold-bg:       rgba(200,144,26,.13);
+  --navy:          #2f5fb0;
+  --navy-bg:       rgba(47,95,176,.11);
+
+  /* серии графиков */
+  --c1: #2688eb;
+  --c2: #6a5cff;
+  --c3: #3f9e3f;
+  --c4: #e8930c;
+  --c5: #e64646;
+  --c6: #16b3c4;
+
+  --grid:          rgba(26,29,33,.10);   /* пунктир сетки графиков */
+  --hatch:         rgba(26,29,33,.14);   /* штриховка неактивных столбцов */
+  --hatch-on:      rgba(255,255,255,.34); /* штриховка поверх акцентной заливки */
+  --bar-idle:      #f0f3f7;
+  --scrim:         rgba(16,20,26,.42);
+
+  --sh-xs: 0 1px 2px rgba(20,26,38,.05);
+  --sh-sm: 0 1px 3px rgba(20,26,38,.07), 0 1px 2px rgba(20,26,38,.04);
+  --sh-md: 0 4px 14px rgba(20,26,38,.08);
+  --sh-lg: 0 18px 44px rgba(20,26,38,.14);
+  --shadow-card: 0 1px 2px rgba(20,26,38,.05);
+
+  --r-xs: 6px;  --r-sm: 9px;  --r-md: 12px;
+  --r-lg: 16px; --r-xl: 20px; --r-pill: 999px;
+
+  /* Движение. Одна кривая и одна лестница длительностей на весь интерфейс:
+     иначе каждый компонент заводит свои .12/.15/.18 и переходы «не сходятся».
+     От темы не зависят — объявлены один раз, в тёмной теме не переопределяются. */
+  --ease:      cubic-bezier(.2,.9,.3,1);   /* базовая: быстрый старт, мягкий выход */
+  --ease-soft: cubic-bezier(.3,.8,.4,1);   /* перемещения: тумблер, сайдбар */
+  --t-press:   .08s;   /* отклик на нажатие */
+  --t-fast:    .12s;   /* подсветка строки, мелкая смена цвета */
+  --t:         .16s;   /* состояние элемента: фон, рамка, тень */
+  --t-slow:    .24s;   /* появление панелей, крупные перестроения */
+
+  /* Логотипы компаний нарисованы под светлый фон, поэтому плитка белая
+     в обеих темах — иначе тёмные знаки сливаются с панелью. */
+  --logo-bg: #ffffff;
+
+  --sidebar-w: 256px;
+  --sidebar-rail: 72px;
+  --topbar-h:  64px;
+  --maxw:      1360px;
+
+  --font: "Onest", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --mono: "Onest", ui-monospace, "SF Mono", Menlo, monospace;
+
+  color-scheme: light;
+}
+
+/* ---------- Тёмная тема --------------------------------------------------- */
+:root[data-theme="dark"] {
+  --bg:            #141618;
+  --bg-deep:       #0e1012;
+  --panel:         #1b1e22;
+  --panel-2:       #22262b;
+  --surface:       rgba(255,255,255,.035);
+  --surface-2:     rgba(255,255,255,.06);
+  --surface-3:     rgba(255,255,255,.10);
+  --border:        rgba(255,255,255,.09);
+  --border-strong: rgba(255,255,255,.16);
+  --ink:           #eef1f5;
+  --text:          #aeb6c0;
+  --text-soft:     #7e8894;
+  --text-faint:    #5a626d;
+
+  --accent:        #3f8ae0;
+  --accent-strong: #2688eb;
+  --accent-hover:  #57a0f0;
+  --accent-bg:     rgba(63,138,224,.16);
+  --accent-ink:    #ffffff;
+
+  --success:       #4bb34b;
+  --success-bg:    rgba(75,179,75,.16);
+  --warn:          #f5a623;
+  --warn-bg:       rgba(245,166,35,.16);
+  --danger:        #ff5c5c;
+  --danger-bg:     rgba(255,92,92,.16);
+  --violet:        #8b81ff;
+  --violet-bg:     rgba(139,129,255,.16);
+  --gold:          #e0b23c;
+  --gold-bg:       rgba(224,178,60,.16);
+  --navy:          #6f9ee8;
+  --navy-bg:       rgba(111,158,232,.16);
+
+  --c1: #3f8ae0;
+  --c2: #8b81ff;
+  --c3: #4bb34b;
+  --c4: #f5a623;
+  --c5: #ff5c5c;
+  --c6: #2fc8d8;
+
+  --grid:     rgba(255,255,255,.10);
+  --hatch:    rgba(255,255,255,.13);
+  --hatch-on: rgba(255,255,255,.30);
+  --bar-idle: rgba(255,255,255,.05);
+  --scrim:    rgba(0,0,0,.6);
+
+  --sh-xs: 0 1px 2px rgba(0,0,0,.35);
+  --sh-sm: 0 1px 3px rgba(0,0,0,.4);
+  --sh-md: 0 6px 20px rgba(0,0,0,.45);
+  --sh-lg: 0 22px 54px rgba(0,0,0,.6);
+  --shadow-card: 0 1px 2px rgba(0,0,0,.3);
+
+  color-scheme: dark;
+}
+
+/* ---------- База ---------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { height: 100%; }
+/* Полоса прокрутки всегда на своём месте. Высота реестра меняется от фильтра
+   к фильтру: на коротком списке полоса исчезала, и вся страница прыгала вбок
+   на её ширину при каждом переключении таба. Одного scrollbar-gutter мало —
+   к корню с overflow: visible он не применяется, поэтому и overflow-y. */
+html { overflow-y: scroll; scrollbar-gutter: stable; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-variant-numeric: tabular-nums;
+}
+
+h1, h2, h3, h4 { margin: 0; color: var(--ink); font-weight: 600; line-height: 1.25; }
+h1 { font-size: 22px; letter-spacing: -.02em; }
+h2 { font-size: 17px; letter-spacing: -.01em; }
+h3 { font-size: 15px; }
+p  { margin: 0; }
+
+a { color: var(--accent); text-decoration: none; transition: color var(--t) var(--ease); }
+a:hover { color: var(--accent-hover); }
+
+button, input, select, textarea { font: inherit; color: inherit; }
+
+svg.ic {
+  width: 18px; height: 18px;
+  flex: none;
+  transition: color var(--t) var(--ease), opacity var(--t) var(--ease);
+  stroke: currentColor;
+  stroke-width: 1.5;
+  fill: none;
+  vertical-align: middle;
+}
+svg.ic.ic-sm { width: 15px; height: 15px; }
+svg.ic.ic-lg { width: 22px; height: 22px; }
+svg.ic.ic-xl { width: 28px; height: 28px; stroke-width: 1.4; }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb {
+  background: var(--surface-3);
+  border: 3px solid transparent;
+  border-radius: var(--r-pill);
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--border-strong); background-clip: content-box; }
+::-webkit-scrollbar-track { background: transparent; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--r-xs);
+}
+
+::selection { background: var(--accent-bg); color: var(--ink); }
+
+/* ---------- Типографские утилиты ----------------------------------------- */
+.eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.num {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .01em;
+}
+.big-num {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 30px;
+  font-weight: 500;
+  letter-spacing: .04em;
+  color: var(--ink);
+  line-height: 1.1;
+}
+.muted  { color: var(--text-soft); }
+.faint  { color: var(--text-faint); }
+.strong { color: var(--ink); font-weight: 600; }
+.t-suc  { color: var(--success); }
+.t-warn { color: var(--warn); }
+.t-dan  { color: var(--danger); }
+.nowrap { white-space: nowrap; }
+.hidden { display: none !important; }
+
+/* ---------- Анимации ------------------------------------------------------ */
+@keyframes fadeUp   { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes fadeIn   { from { opacity: 0; } to { opacity: 1; } }
+@keyframes drawIn   { from { stroke-dashoffset: var(--len, 1200); } to { stroke-dashoffset: 0; } }
+@keyframes drawSeg  { from { opacity: 0; transform: scale(.82); } to { opacity: 1; transform: none; } }
+@keyframes riseBar  { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes ping     { 0% { r: 4; opacity: .55; } 70% { r: 15; opacity: 0; } 100% { r: 15; opacity: 0; } }
+@keyframes pingR    { 0% { transform: scale(.6); opacity: .6; } 70%,100% { transform: scale(2.4); opacity: 0; } }
+@keyframes spin     { to { transform: rotate(360deg); } }
+@keyframes slideIn  { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: none; } }
+
+.reveal { animation: fadeUp .44s var(--ease) both; }
+.reveal-1 { animation-delay: .03s; } .reveal-2 { animation-delay: .07s; }
+.reveal-3 { animation-delay: .11s; } .reveal-4 { animation-delay: .15s; }
+.reveal-5 { animation-delay: .19s; } .reveal-6 { animation-delay: .23s; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,232 @@
+/* ============================================================================
+   charts.css — оформление SVG-графиков, тепловой карты и карт мира.
+   Цвета приходят из токенов: движок графиков рисует var(--cN), не hex.
+   ========================================================================= */
+
+.chart { width: 100%; display: block; overflow: visible; }
+.chart text { font-family: var(--font); font-variant-numeric: tabular-nums; }
+.chart .ax {
+  font-size: 10.5px; fill: var(--text-soft);
+  letter-spacing: .03em;
+}
+.chart .ax-y { font-size: 10px; fill: var(--text-faint); }
+.chart .grid-l {
+  stroke: var(--grid); stroke-width: 1; stroke-dasharray: 2 4;
+}
+.chart .base-l { stroke: var(--border); stroke-width: 1; }
+
+/* столбцы: неактивные — штриховка, активный — заливка акцентом */
+.chart .bar {
+  fill: var(--bar-idle); transform-origin: bottom;
+  animation: riseBar .6s var(--ease) both;
+  /* наведение на столбец подсвечивает его не мгновенно */
+  transition: fill var(--t) var(--ease), filter var(--t) var(--ease);
+}
+.chart .bar-h { fill: url(#hatch); }
+.chart .bar-on { fill: var(--accent-strong); }
+.chart .bar-on-h { fill: url(#hatch-on); }
+.chart .bar-hit { fill: transparent; cursor: pointer; }
+.chart .bar-hit:hover + .bar-group .bar,
+.chart g:hover > .bar { filter: brightness(.97); }
+
+/* линии и области */
+.chart .line {
+  fill: none; stroke-width: 2.25; stroke-linecap: round; stroke-linejoin: round;
+  animation: drawIn 1.25s var(--ease-soft) both;
+  transition: stroke var(--t) var(--ease);
+}
+.chart .area { animation: fadeIn .9s .25s both; }
+.chart .pt { animation: fadeIn .4s .8s both; }
+.chart .pt-ring { fill: var(--panel); stroke-width: 2.5; }
+
+/* наведение на линейный график: направляющая + точки на сериях */
+.chart .guide {
+  stroke: var(--border-strong); stroke-width: 1; stroke-dasharray: 3 3;
+  opacity: 0; transition: opacity var(--t-fast) var(--ease);
+}
+.chart .pt-hover {
+  opacity: 0; transition: opacity var(--t-fast) var(--ease), r var(--t-fast) var(--ease);
+  stroke: var(--panel); stroke-width: 2.5;
+}
+.chart .hitg:hover .guide,
+.chart .hitg:hover .pt-hover,
+.chart .hitg.is-on .guide,
+.chart .hitg.is-on .pt-hover { opacity: 1; }
+
+/* донат «из точек» — как в референсе */
+.chart .dseg {
+  animation: drawSeg .5s var(--ease) both; transform-origin: center;
+  transition: fill var(--t) var(--ease), opacity var(--t) var(--ease);
+}
+.chart .dlabel {
+  fill: var(--ink); font-weight: 600; font-family: var(--mono);
+  /* табличные цифры Onest дают широкий боковой отступ и «12» читается как «1 2» */
+  font-variant-numeric: normal; letter-spacing: -.01em;
+}
+.chart .dsub { fill: var(--text-faint); font-size: 11px; }
+
+/* спарклайны в KPI */
+.spark { display: block; overflow: visible; }
+.spark .line { stroke-width: 1.6; animation-duration: .9s; }
+
+/* тултип */
+.ch-tip {
+  position: absolute; z-index: 30; pointer-events: none;
+  display: flex; align-items: center; gap: 7px;
+  padding: 4px 5px 4px 9px;
+  border-radius: var(--r-pill);
+  background: var(--panel); border: 1px solid var(--border);
+  box-shadow: var(--sh-md);
+  font-size: 11.5px; color: var(--text-soft); white-space: nowrap;
+  transform: translate(-50%, -140%);
+  transition: opacity var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
+}
+.ch-tip b {
+  display: inline-flex; align-items: center; height: 20px; padding: 0 9px;
+  border-radius: var(--r-pill);
+  background: var(--ink); color: var(--panel);
+  font-family: var(--mono); font-size: 11.5px; font-weight: 600; letter-spacing: .02em;
+}
+.ch-tip[hidden] { display: none; }
+
+/* карточка для линейного графика: подпись сверху, значения серий под ней */
+.ch-tip-card {
+  flex-direction: column; align-items: flex-start; gap: 3px;
+  padding: 8px 11px; border-radius: var(--r-sm);
+  transform: translate(-50%, -128%);
+}
+.ch-tip-card .ct-l { font-size: 10.5px; color: var(--text-faint); letter-spacing: .02em; }
+.ch-tip-card .ct-row {
+  display: flex; align-items: center; gap: 6px;
+  font-family: var(--mono); font-variant-numeric: tabular-nums;
+  font-size: 13.5px; font-weight: 600; color: var(--ink);
+}
+.ch-tip-card .ct-row i { width: 6px; height: 6px; border-radius: 50%; flex: none; box-shadow: 0 0 0 1px var(--border); }
+.ch-host { position: relative; }
+
+/* легенда */
+.legend { display: flex; align-items: stretch; border-top: 1px solid var(--border); }
+.legend-i {
+  flex: 1; min-width: 0; padding: 12px 14px;
+  border-left: 1px solid var(--border);
+}
+.legend-i:first-child { border-left: 0; }
+.legend-n { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-soft); margin-bottom: 7px; line-height: 1.3; }
+.legend-n .dot { width: 6px; height: 6px; border-radius: 50%; flex: none; }
+.legend-v { display: flex; flex-direction: column; gap: 2px; }
+.legend-p { font-size: 11px; color: var(--text-faint); font-family: var(--mono); }
+.legend-a { font-size: 15px; font-weight: 600; color: var(--ink); font-family: var(--mono); letter-spacing: .02em; }
+
+.legend-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.legend-row .li { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-soft); }
+.legend-row .li .dot { width: 8px; height: 8px; border-radius: 2px; flex: none; }
+/* Образец «закрыто» в режиме столбцов: та же светлая подложка с диагональной
+   штриховкой, что и у самого столбца. Обводка — потому что подложка почти
+   сливается с карточкой, а образец должен быть виден. */
+.dot-hatch {
+  background: repeating-linear-gradient(45deg, var(--hatch) 0 1.6px, var(--bar-idle) 1.6px 5px);
+  box-shadow: 0 0 0 1px var(--border-strong);
+}
+
+/* тепловая карта */
+.heat { display: grid; gap: 3px; }
+.heat-c {
+  aspect-ratio: 1; border-radius: 3px; background: var(--accent);
+  transition: background var(--t) var(--ease), opacity var(--t) var(--ease);
+}
+.heat-lbl { font-size: 10px; color: var(--text-faint); text-align: center; }
+
+/* точечная карта мира */
+.wmap-wrap {
+  position: relative; overflow: hidden;
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+}
+.wmap-wrap.is-zoomable { cursor: grab; }
+.wmap-wrap.is-zoomable:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.wmap-wrap.is-drag { cursor: grabbing; }
+.wmap { width: 100%; height: auto; display: block; touch-action: none; }
+
+/* суша: базовые гексы + ореол вокруг активных юрисдикций */
+.wmap .wm-hex { stroke: none; }
+.wmap .wm-base   { fill: var(--surface-3); }
+:root[data-theme="dark"] .wmap .wm-base { fill: rgba(255,255,255,.13); }
+.wmap .wm-ok     { fill: var(--accent);  opacity: .85; }
+.wmap .wm-ok-s   { fill: var(--accent);  opacity: .34; }
+.wmap .wm-warn   { fill: var(--warn);    opacity: .85; }
+.wmap .wm-warn-s { fill: var(--warn);    opacity: .34; }
+.wmap .wm-danger { fill: var(--danger);  opacity: .85; }
+.wmap .wm-danger-s { fill: var(--danger); opacity: .34; }
+.wmap .wm-hub    { fill: var(--c2);      opacity: .9; }
+.wmap .wm-hub-s  { fill: var(--c2);      opacity: .35; }
+
+.wmap .mk { fill: var(--accent); }
+.wmap .mk-warn { fill: var(--warn); }
+.wmap .mk-danger { fill: var(--danger); }
+.wmap .ping { fill: var(--accent); animation: ping 2.6s cubic-bezier(.2,.6,.4,1) infinite; }
+/* точки карты перекрашиваются при смене темы и фильтра — плавно */
+.wmap .wm-hex, .wmap .mk, .wmap .arc { transition: fill var(--t) var(--ease), opacity var(--t) var(--ease); }
+.wmap .ping-warn { fill: var(--warn); }
+.wmap .arc { fill: none; stroke: var(--accent); stroke-width: 1.2; stroke-dasharray: 3 4; opacity: .55; }
+
+/* «отправка запроса»: бегущий пунктир + импульс по дуге */
+.wmap.is-flow .arc { animation: wmDash 1.9s linear infinite; }
+.wmap .flow { fill: var(--c2); }
+.wmap .flow-amb { fill: var(--accent); opacity: .75; }
+.wmap .arc-amb { stroke-width: .9; opacity: .18; stroke-dasharray: 2 5; animation: none; }
+.wmap .amb-dot { fill: var(--accent); opacity: .45; }
+.wmap .flow-warn { fill: var(--warn); }
+.wmap .flow-danger { fill: var(--danger); }
+@keyframes wmDash { to { stroke-dashoffset: -14px; } }
+@media (prefers-reduced-motion: reduce) {
+  .wmap .flow { display: none; }
+  .wmap.is-flow .arc { animation: none; }
+}
+.wmap .hub { fill: var(--c2); }
+
+/* подписи-чипы поверх карты */
+.wmap-pins { position: absolute; inset: 0; pointer-events: none; }
+.wpin {
+  position: absolute; left: 0; top: 0;
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 4px 9px 4px 5px;
+  border: 1px solid var(--border-strong); border-radius: 999px;
+  background: var(--panel); box-shadow: var(--sh-md);
+  white-space: nowrap; will-change: transform;
+}
+.wpin-ic {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 20px; height: 20px; border-radius: 6px; flex: none;
+  background: var(--accent-bg); color: var(--accent);
+}
+.wpin.is-warn .wpin-ic { background: var(--warn-bg); color: var(--warn); }
+.wpin.is-danger .wpin-ic { background: var(--danger-bg); color: var(--danger); }
+.wpin.is-hub .wpin-ic { background: var(--accent-bg); color: var(--c2); }
+.wpin-b { display: flex; flex-direction: column; line-height: 1.15; }
+.wpin-t { font-size: 11px; font-weight: 600; color: var(--ink); }
+.wpin-v { font-size: 10.5px; color: var(--text-faint); }
+
+/* управление зумом */
+.wmap-ctl { position: absolute; right: 10px; top: 10px; display: flex; flex-direction: column; gap: 6px; }
+.wmap-b {
+  width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
+  color: var(--text-soft); cursor: pointer;
+  border: 1px solid var(--border-strong); border-radius: 8px;
+  background: var(--panel);
+  transition: color var(--t) var(--ease), border-color var(--t) var(--ease),
+              background var(--t) var(--ease), transform var(--t-press) var(--ease);
+}
+.wmap-b:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-bg); }
+.wmap-b:active { transform: translateY(1px); }
+.wmap-zl {
+  position: absolute; right: 10px; bottom: 10px;
+  padding: 3px 8px; border-radius: 999px;
+  font-family: var(--mono); font-size: 10.5px; color: var(--text-faint);
+  border: 1px solid var(--border); background: var(--panel);
+}
+
+/* карта на странице Discovery */
+/* высоту задаёт только пропорция карты — иначе снизу остаётся пустая полоса */
+.lmap { width: 100%; aspect-ratio: 1000 / 420; }
+.lmap .wmap-wrap { width: 100%; height: 100%; }
+.lmap .wmap { height: 100%; }

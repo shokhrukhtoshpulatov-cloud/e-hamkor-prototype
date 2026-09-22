@@ -1,0 +1,71 @@
+/* ============================================================================
+   login.css — страница входа и выбора демо-роли.
+   ========================================================================= */
+
+.login {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  background: var(--bg);
+}
+
+.login-aside {
+  position: relative; overflow: hidden;
+  padding: 44px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+}
+/* карта закрывает всю панель — режим fit:"cover" в worldMapDecor */
+.login-aside .wmap-wrap {
+  position: absolute; inset: 0;
+  opacity: .55; background: none; border-radius: 0;
+}
+.login-aside .wmap { height: 100%; }
+.login-aside > * { position: relative; z-index: 1; }
+.login-claim { max-width: 420px; }
+.login-claim h2 { font-size: 27px; letter-spacing: -.025em; line-height: 1.25; margin-bottom: 12px; }
+.login-claim p { font-size: 14px; color: var(--text-soft); line-height: 1.6; }
+.login-facts { display: flex; gap: 28px; flex-wrap: wrap; }
+.login-fact .v { font-family: var(--mono); font-size: 21px; font-weight: 600; color: var(--ink); letter-spacing: .02em; }
+.login-fact .k { font-size: 11.5px; color: var(--text-faint); margin-top: 2px; }
+
+.login-main { display: flex; align-items: center; justify-content: center; padding: 44px 32px; }
+.login-box { width: 100%; max-width: 430px; }
+.login-box > .brand { margin-bottom: 26px; }
+.login-box h1 { font-size: 24px; letter-spacing: -.02em; margin-bottom: 6px; }
+.login-box .lead { font-size: 13.5px; color: var(--text-soft); margin-bottom: 22px; }
+
+.role-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+.role-card {
+  display: flex; align-items: center; gap: 12px; width: 100%;
+  padding: 11px 13px; text-align: left;
+  border: 1px solid var(--border-strong); border-radius: var(--r-sm);
+  background: var(--panel); cursor: pointer;
+  transition: border-color var(--t) var(--ease), background var(--t) var(--ease),
+              box-shadow var(--t) var(--ease), transform var(--t-press) var(--ease);
+}
+.role-card:hover { border-color: var(--accent); background: var(--accent-bg); }
+.role-card:active { transform: translateY(1px); }
+.role-b { min-width: 0; flex: 1; display: flex; flex-direction: column; }
+.role-n { font-size: 13.5px; font-weight: 600; color: var(--ink); }
+.role-o { font-size: 11.5px; color: var(--text-faint); margin-top: 1px; }
+.role-card .ic { width: 16px; height: 16px; color: var(--text-faint); flex: none; }
+.role-card:hover .ic { color: var(--accent); }
+
+.login-foot { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-top: 20px; }
+.login-lang { display: flex; gap: 3px; padding: 3px; background: var(--surface-2); border-radius: var(--r-sm); border: 1px solid var(--border); }
+.login-lang button {
+  height: 26px; padding: 0 11px; border: 0; border-radius: var(--r-xs);
+  background: none; color: var(--text-soft); font-size: 12px; font-weight: 600; cursor: pointer;
+  transition: background var(--t) var(--ease), color var(--t) var(--ease),
+              box-shadow var(--t) var(--ease), transform var(--t-press) var(--ease);
+}
+.login-lang button:hover { color: var(--ink); }
+.login-lang button:active { transform: translateY(1px); }
+.login-lang button.is-on { background: var(--panel); color: var(--ink); box-shadow: var(--sh-xs); }
+
+@media (max-width: 1000px) {
+  .login { grid-template-columns: minmax(0, 1fr); }
+  .login-aside { display: none; }
+}

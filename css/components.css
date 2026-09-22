@@ -1,0 +1,831 @@
+/* ============================================================================
+   components.css — переиспользуемые элементы интерфейса.
+   Любой цвет — только через токен из theme.css.
+   ========================================================================= */
+
+/* ---------- Кнопки -------------------------------------------------------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  height: 36px; padding: 0 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-sm);
+  background: var(--panel);
+  color: var(--ink);
+  font-size: 13px; font-weight: 500;
+  white-space: nowrap; cursor: pointer;
+  transition: background var(--t) var(--ease), border-color var(--t) var(--ease),
+              color var(--t) var(--ease), box-shadow var(--t) var(--ease),
+              filter var(--t) var(--ease), transform var(--t-press) var(--ease);
+  box-shadow: var(--sh-xs);
+}
+.btn:hover    { background: var(--surface-2); border-color: var(--border-strong); }
+.btn:active   { transform: translateY(1px); }
+.btn .ic      { width: 16px; height: 16px; }
+
+.btn-primary {
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
+  color: var(--accent-ink);
+  box-shadow: var(--sh-sm);
+}
+.btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+
+.btn-ghost {
+  background: transparent; border-color: transparent; color: var(--text);
+  box-shadow: none;
+}
+.btn-ghost:hover { background: var(--surface-2); color: var(--ink); }
+
+.btn-subtle {
+  background: var(--surface); border-color: var(--border); color: var(--text);
+  box-shadow: none;
+}
+.btn-subtle:hover { background: var(--surface-2); color: var(--ink); }
+
+.btn-danger {
+  background: var(--danger); border-color: var(--danger); color: #fff;
+}
+.btn-danger:hover { filter: brightness(1.07); }
+
+.btn-sm { height: 30px; padding: 0 10px; font-size: 12px; border-radius: var(--r-xs); }
+.btn-sm .ic { width: 14px; height: 14px; }
+.btn-lg { height: 44px; padding: 0 20px; font-size: 14px; border-radius: var(--r-md); }
+
+.btn-icon { width: 36px; padding: 0; }
+.btn-icon.btn-sm { width: 30px; }
+
+.btn[aria-disabled="true"], .btn:disabled {
+  opacity: .45; pointer-events: none; box-shadow: none;
+}
+.btn[data-done="1"] { background: var(--success-bg); border-color: transparent; color: var(--success); }
+
+.btn-grp { display: inline-flex; }
+.btn-grp .btn { border-radius: 0; margin-left: -1px; box-shadow: none; }
+.btn-grp .btn:first-child { border-radius: var(--r-sm) 0 0 var(--r-sm); margin-left: 0; }
+.btn-grp .btn:last-child  { border-radius: 0 var(--r-sm) var(--r-sm) 0; }
+/* Внешние углы группы повторяют скругление своей же кнопки: у btn-sm оно
+   меньше, и группа из мелких кнопок рядом с одиночной мелкой кнопкой
+   иначе скругляется сильнее неё. */
+.btn-grp .btn-sm:first-child { border-radius: var(--r-xs) 0 0 var(--r-xs); }
+.btn-grp .btn-sm:last-child  { border-radius: 0 var(--r-xs) var(--r-xs) 0; }
+.btn-grp .btn.is-on { background: var(--surface-3); color: var(--ink); z-index: 1; }
+
+/* ---------- Карточки ------------------------------------------------------ */
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-card);
+  position: relative;
+}
+.card-pad  { padding: 18px; }
+.card-pad-lg { padding: 22px; }
+.card-head {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.card-head.no-rule { border-bottom: 0; padding-bottom: 6px; }
+.card-head h2, .card-head h3 { line-height: 1.3; }
+.card-head-r { display: flex; align-items: center; gap: 8px; flex: none; }
+.card-body { padding: 18px; }
+.card-foot {
+  padding: 12px 18px; border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+
+/* ---------- Пилюли статусов ---------------------------------------------- */
+.pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 22px; padding: 0 9px;
+  border-radius: var(--r-pill);
+  font-size: 11px; font-weight: 600; letter-spacing: .01em;
+  white-space: nowrap;
+  background: var(--surface-2); color: var(--text-soft);
+  border: 1px solid transparent;
+  transition: background var(--t) var(--ease), color var(--t) var(--ease),
+              border-color var(--t) var(--ease);
+}
+.pill::before {
+  content: ""; width: 5px; height: 5px; border-radius: 50%;
+  background: currentColor; flex: none;
+}
+.pill-plain::before { display: none; }
+.pill-outline { background: transparent; border-color: var(--border-strong); color: var(--text-soft); }
+.pill-info    { background: var(--accent-bg);  color: var(--accent); }
+.pill-navy    { background: var(--navy-bg);    color: var(--navy); }
+.pill-warn    { background: var(--warn-bg);    color: var(--warn); }
+.pill-danger  { background: var(--danger-bg);  color: var(--danger); }
+.pill-success { background: var(--success-bg); color: var(--success); }
+.pill-violet  { background: var(--violet-bg);  color: var(--violet); }
+.pill-gold    { background: var(--gold-bg);    color: var(--gold); }
+
+.chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11.5px; font-weight: 600;
+  color: var(--text-soft);
+}
+.chip .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex: none; }
+.chip .val { font-variant-numeric: tabular-nums; }
+.chip-up   { color: var(--success); }
+.chip-down { color: var(--danger); }
+.chip .rest { color: var(--text-faint); font-weight: 500; }
+
+/* ---------- KPI-плитка ---------------------------------------------------- */
+.stat {
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 16px 18px 15px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-card);
+  min-width: 0;
+  position: relative; overflow: hidden;
+}
+.stat::after {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: transparent;
+  transition: background var(--t) var(--ease);
+}
+.stat.is-info::after   { background: var(--accent); }
+.stat.is-warn::after   { background: var(--warn); }
+.stat.is-danger::after { background: var(--danger); }
+.stat.is-gold::after   { background: var(--gold); }
+.stat-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.stat-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+.stat-val { font-family: var(--mono); font-size: 28px; font-weight: 500; letter-spacing: .03em; color: var(--ink); line-height: 1.05; }
+.stat-spark { flex: none; opacity: .95; }
+.stat-foot { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; min-height: 18px; }
+
+/* ---------- Таблицы ------------------------------------------------------- */
+.tbl-wrap { overflow-x: auto; min-width: 0; }
+.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tbl thead th {
+  position: sticky; top: 0; z-index: 2;
+  background: var(--panel);
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--text-faint);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.tbl tbody td {
+  padding: 12px 14px;
+  border-bottom: 1px dashed var(--border);
+  color: var(--text);
+  vertical-align: middle;
+}
+.tbl tbody tr:last-child td { border-bottom: 0; }
+.tbl tbody tr { transition: background var(--t-fast) var(--ease); }
+.tbl tbody tr:hover { background: var(--surface); }
+.tbl tbody tr[tabindex]:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.tbl .t-r { text-align: right; }
+.tbl .t-c { text-align: center; }
+.tbl .id  { font-family: var(--mono); font-weight: 600; color: var(--ink); letter-spacing: .01em; white-space: nowrap; }
+.tbl a.id:hover { color: var(--accent); }
+.tbl .cell-main { display: flex; align-items: center; gap: 9px; min-width: 0; }
+.tbl .sub {
+  display: block; font-size: 11.5px; color: var(--text-faint); margin-top: 1px;
+  /* подзаголовок не должен распирать колонку и ломать номер документа */
+  max-width: 36ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* ---------- Аватары ------------------------------------------------------- */
+.ava {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; border-radius: 50%;
+  font-size: 11px; font-weight: 700; letter-spacing: .02em;
+  color: #fff; flex: none; user-select: none;
+}
+.ava-sm { width: 24px; height: 24px; font-size: 9.5px; }
+.ava-lg { width: 44px; height: 44px; font-size: 15px; }
+.ava-xl { width: 68px; height: 68px; font-size: 22px; }
+
+/* ---------- Формы --------------------------------------------------------- */
+.field { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+.field > label {
+  font-size: 12px; font-weight: 500; color: var(--text-soft);
+}
+.field .hint { font-size: 11.5px; color: var(--text-faint); display: flex; align-items: center; gap: 5px; }
+/* display:flex выше перебивает браузерное [hidden]{display:none} — возвращаем его */
+.field .hint[hidden] { display: none; }
+.field .hint .ic { width: 13px; height: 13px; }
+
+.input, .select, textarea.input {
+  width: 100%; height: 38px; padding: 0 12px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-sm);
+  color: var(--ink); font-size: 13px;
+  transition: border-color var(--t) var(--ease), background var(--t) var(--ease),
+              box-shadow var(--t) var(--ease), color var(--t) var(--ease);
+  appearance: none;
+}
+textarea.input { height: auto; min-height: 96px; padding: 10px 12px; line-height: 1.55; resize: vertical; }
+.input::placeholder { color: var(--text-faint); }
+.input:hover, .select:hover { border-color: var(--border-strong); background: var(--surface-2); }
+.input:focus, .select:focus, textarea.input:focus {
+  outline: none; border-color: var(--accent);
+  background: var(--panel);
+  box-shadow: 0 0 0 3px var(--accent-bg);
+}
+.input.is-err, .select.is-err { border-color: var(--danger); box-shadow: 0 0 0 3px var(--danger-bg); }
+
+.select {
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-soft) 50%),
+                    linear-gradient(135deg, var(--text-soft) 50%, transparent 50%);
+  background-position: calc(100% - 17px) 17px, calc(100% - 12px) 17px;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 32px;
+  cursor: pointer;
+}
+
+/* ---------- Собственный дропдаун (js/select.js) --------------------------- */
+/* Системный список <select> рисует ОС: он игнорирует токены, шрифт и радиусы
+   и в тёмной теме выглядел чужим. Нативный select остаётся в разметке
+   (значение, change, label for), но прячется; видимы кнопка и список ниже.
+   Стили выше (.select) — состояние «до инициализации» и запасной вид без JS. */
+.sel { position: relative; display: flex; min-width: 0; }
+.sel > .sel-native {
+  position: absolute; left: 12px; bottom: 0;
+  width: 1px; height: 1px; padding: 0; margin: 0; border: 0;
+  opacity: 0; pointer-events: none; clip-path: inset(50%);
+}
+.sel > .sel-btn {
+  display: flex; align-items: center; gap: 9px;
+  background-image: none; padding-right: 10px;
+  text-align: left; font-weight: 500;
+}
+.sel-val {
+  display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0;
+}
+.sel-val .n { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sel-val.is-ph { color: var(--text-soft); font-weight: 400; }
+.sel-val .sel-ic { width: 15px; height: 15px; color: var(--text-faint); }
+.sel-caret {
+  width: 15px; height: 15px; color: var(--text-faint);
+  transition: transform var(--t) var(--ease), color var(--t) var(--ease);
+}
+.sel > .sel-btn:hover .sel-caret { color: var(--text-soft); }
+.sel > .sel-btn:active { transform: translateY(1px); }
+.sel.is-open > .sel-btn {
+  border-color: var(--accent); background: var(--panel);
+  box-shadow: 0 0 0 3px var(--accent-bg);
+}
+.sel.is-open .sel-caret { transform: rotate(180deg); color: var(--accent); }
+.sel.is-err > .sel-btn { border-color: var(--danger); box-shadow: 0 0 0 3px var(--danger-bg); }
+.sel.is-disabled > .sel-btn {
+  opacity: .55; cursor: not-allowed; background: var(--surface-2); box-shadow: none;
+}
+
+/* Список — в <body> и position:fixed: карточки и тулбары режут overflow,
+   а sticky-шапка таблицы перекрывала бы его по z-index. */
+.sel-pop {
+  position: fixed; z-index: 90; display: flex; flex-direction: column;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: var(--sh-lg);
+  padding: 6px;
+  animation: slideIn var(--t) var(--ease) both;
+}
+.sel-pop.is-up { transform-origin: bottom; }
+/* Класс вешает select.js перед удалением панели — закрытие тем же движением.
+   Панель ещё в DOM, поэтому клик сквозь неё не должен попадать в неё же. */
+.sel-pop.is-closing { animation: slideIn var(--t-fast) var(--ease) reverse both; pointer-events: none; }
+
+.sel-search { position: relative; display: flex; align-items: center; padding-bottom: 6px; }
+.sel-search .ic {
+  position: absolute; left: 10px; width: 14px; height: 14px;
+  color: var(--text-faint); pointer-events: none;
+}
+.sel-search input {
+  width: 100%; height: 32px; padding: 0 10px 0 31px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xs);
+  color: var(--ink); font-size: 12.5px;
+  outline: none; transition: border-color var(--t) var(--ease), background var(--t) var(--ease);
+}
+.sel-search input::placeholder { color: var(--text-faint); }
+.sel-search input:focus { border-color: var(--accent); background: var(--panel); }
+
+.sel-list { overflow-y: auto; overscroll-behavior: contain; min-height: 0; outline: none; }
+.sel-group {
+  padding: 8px 10px 5px; font-size: 10px; font-weight: 600;
+  letter-spacing: .09em; text-transform: uppercase; color: var(--text-faint);
+}
+.sel-opt {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 10px; border-radius: var(--r-xs);
+  color: var(--text); font-size: 13px; cursor: pointer;
+  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+}
+.sel-opt .sel-t { display: flex; flex-direction: column; gap: 1px; flex: 1; min-width: 0; }
+.sel-opt .sel-t .n { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sel-opt .sel-t .s { font-size: 11px; color: var(--text-faint); }
+.sel-opt .sel-ic { width: 16px; height: 16px; color: var(--text-faint); }
+.sel-opt .sel-tick {
+  width: 15px; height: 15px; color: var(--accent);
+  opacity: 0; transform: scale(.7);
+  transition: opacity var(--t) var(--ease), transform var(--t) var(--ease);
+}
+.sel-opt.is-on .sel-tick { transform: none; }
+.sel-opt.is-active { background: var(--surface-2); color: var(--ink); }
+.sel-opt.is-active .sel-ic { color: var(--ink); }
+.sel-opt.is-on { color: var(--ink); font-weight: 500; }
+.sel-opt.is-on .sel-tick { opacity: 1; }
+.sel-opt.is-on .sel-ic { color: var(--accent); }
+.sel-opt.is-off { opacity: .45; cursor: not-allowed; }
+.sel-empty { padding: 16px 10px; text-align: center; font-size: 12.5px; color: var(--text-faint); }
+
+/* ---------- Поле одной даты (js/period.js) ------------------------------- */
+/* Выглядит как .select: в форме поле стоит в одном ряду с выпадающими
+   списками. Нативный input[type="date"] не годится — его календарь рисует
+   браузер: своя вёрстка, свой язык и цвета мимо темы. */
+.date-btn {
+  display: flex; align-items: center; gap: 9px;
+  background-image: none; padding-right: 10px;
+  text-align: left; font-weight: 500; cursor: pointer;
+}
+.date-btn .date-val {
+  flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.date-btn .date-val.is-ph { color: var(--text-soft); font-weight: 400; }
+.date-btn .date-ic {
+  width: 15px; height: 15px; flex: none; color: var(--text-faint);
+  transition: color var(--t) var(--ease);
+}
+.date-btn:hover .date-ic { color: var(--text-soft); }
+.date-btn:active { transform: translateY(1px); }
+.date-btn.is-open {
+  border-color: var(--accent); background: var(--panel);
+  box-shadow: 0 0 0 3px var(--accent-bg);
+}
+.date-btn.is-open .date-ic { color: var(--accent); }
+
+/* ---------- Отбор по периоду (js/period.js) ------------------------------ */
+/* Кнопка-триггер: тот же рост и вес, что у .sel-btn в тулбаре — фильтры
+   стоят в ряд и не должны различаться по высоте. */
+.per-btn { gap: 8px; font-weight: 500; padding: 0 10px 0 11px; }
+.per-btn .per-lbl { white-space: nowrap; }
+.per-caret {
+  width: 15px; height: 15px; color: var(--text-faint);
+  transition: transform var(--t) var(--ease), color var(--t) var(--ease);
+}
+.per-btn:hover .per-caret { color: var(--text-soft); }
+.per-btn.is-open {
+  border-color: var(--accent); background: var(--panel);
+  box-shadow: 0 0 0 3px var(--accent-bg);
+}
+.per-btn.is-open .per-caret { transform: rotate(180deg); color: var(--accent); }
+
+/* Панель — в <body> и position:fixed по той же причине, что и .sel-pop */
+.per-pop {
+  position: fixed; z-index: 90; display: flex; align-items: stretch;
+  overflow: auto; overscroll-behavior: contain;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: var(--sh-lg);
+  animation: slideIn var(--t) var(--ease) both;
+}
+.per-pop.is-up { transform-origin: bottom; }
+.per-pop.is-closing { animation: slideIn var(--t-fast) var(--ease) reverse both; pointer-events: none; }
+/* Подложка диапазона перетекает следом за выбором дней */
+.per-cell::before { transition: background var(--t-fast) var(--ease); }
+
+.per-presets {
+  display: flex; flex-direction: column; gap: 2px; flex: none;
+  width: 190px; padding: 10px; border-right: 1px solid var(--border);
+}
+.per-preset {
+  padding: 8px 11px; border: 0; border-radius: var(--r-xs);
+  background: transparent; color: var(--text);
+  font-family: inherit; font-size: 13px; text-align: left; cursor: pointer;
+  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+}
+.per-preset:hover { background: var(--surface-2); color: var(--ink); }
+.per-preset.is-on { background: var(--accent-bg); color: var(--accent); font-weight: 600; }
+
+.per-cal { width: 322px; flex: none; padding: 10px 14px 12px; }
+.per-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 4px; margin-bottom: 4px;
+}
+.per-switches { display: flex; align-items: center; gap: 4px; }
+.per-switch {
+  padding: 5px 9px; border: 0; border-radius: var(--r-xs);
+  background: transparent; color: var(--ink);
+  font-family: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer;
+  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+}
+.per-switch:hover, .per-switch.is-open { background: var(--surface-2); }
+.per-nav {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; flex: none;
+  border: 0; border-radius: 50%; background: transparent;
+  color: var(--text-soft); cursor: pointer;
+  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease),
+              opacity var(--t) var(--ease);
+}
+.per-nav:hover:not(:disabled) { background: var(--surface-2); color: var(--ink); }
+.per-nav:disabled { color: var(--text-faint); opacity: .4; cursor: default; }
+
+.per-grid { display: grid; grid-template-columns: repeat(7, 1fr); }
+.per-wide { grid-template-columns: repeat(3, 1fr); gap: 6px 8px; padding: 10px 0; }
+.per-wd {
+  height: 28px; line-height: 28px; text-align: center;
+  font-size: 10px; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--text-faint);
+}
+
+/* Ячейка держит подложку диапазона, кружок дня лежит внутри: подложка
+   обязана смыкаться между соседними днями без зазора. */
+.per-cell {
+  position: relative; display: flex; align-items: center; justify-content: center;
+  height: 34px;
+}
+.per-cell::before {
+  content: ""; position: absolute; top: 2px; bottom: 2px; left: 0; right: 0;
+  background: transparent;
+}
+.per-cell.is-in::before, .per-cell.is-start::before, .per-cell.is-end::before {
+  background: var(--accent-bg);
+}
+.per-cell.is-start::before { left: 50%; }
+.per-cell.is-end::before { right: 50%; }
+/* Края недели скругляются: подложка не упирается в границу сетки */
+.per-cell:nth-child(7n + 1)::before { border-radius: var(--r-pill) 0 0 var(--r-pill); }
+.per-cell:nth-child(7n)::before { border-radius: 0 var(--r-pill) var(--r-pill) 0; }
+
+.per-day {
+  position: relative; display: inline-flex; align-items: center; justify-content: center;
+  width: 31px; height: 31px;
+  border: 0; border-radius: 50%; background: transparent;
+  color: var(--ink); font-family: var(--mono); font-size: 12.5px; cursor: pointer;
+  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease),
+              opacity var(--t) var(--ease);
+}
+.per-day:hover:not(:disabled):not(.is-on) { background: var(--surface-2); }
+.per-day.is-today { color: var(--accent); font-weight: 700; }
+.per-day.is-on { background: var(--accent-strong); color: #fff; font-weight: 600; }
+.per-day:disabled { color: var(--text-faint); opacity: .45; cursor: default; }
+
+.per-unit {
+  height: 38px; border: 0; border-radius: var(--r-xs);
+  background: transparent; color: var(--ink);
+  font-family: inherit; font-size: 13px; cursor: pointer;
+  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease),
+              opacity var(--t) var(--ease);
+}
+.per-unit:hover:not(:disabled):not(.is-on) { background: var(--surface-2); }
+.per-unit.is-on { background: var(--accent-strong); color: #fff; font-weight: 600; }
+.per-unit:disabled { color: var(--text-faint); opacity: .45; cursor: default; }
+
+.per-foot {
+  margin-top: 6px; padding-top: 10px; border-top: 1px solid var(--border);
+  font-size: 12.5px; color: var(--text-soft); font-variant-numeric: tabular-nums;
+}
+
+/* На узком экране панель в две колонки не помещается: периоды становятся
+   строкой чипов над календарём, а он растягивается по ширине панели. */
+@media (max-width: 560px) {
+  .per-pop { flex-direction: column; }
+  .per-presets {
+    flex-direction: row; flex-wrap: wrap; width: auto;
+    border-right: 0; border-bottom: 1px solid var(--border);
+  }
+  .per-preset { padding: 6px 10px; border-radius: var(--r-pill); font-size: 12.5px; }
+  .per-cal { width: auto; }
+}
+
+.search {
+  position: relative; display: flex; align-items: center; min-width: 0;
+}
+.search .ic {
+  position: absolute; left: 11px; width: 15px; height: 15px;
+  color: var(--text-faint); pointer-events: none;
+}
+.search .input { padding-left: 33px; }
+.search:focus-within .ic { color: var(--text-soft); }
+
+.switch {
+  position: relative; width: 36px; height: 20px; flex: none;
+  background: var(--surface-3); border-radius: var(--r-pill);
+  cursor: pointer; transition: background var(--t) var(--ease); border: 0;
+}
+.switch::after {
+  content: ""; position: absolute; top: 2px; left: 2px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--panel); box-shadow: var(--sh-xs);
+  transition: transform var(--t) var(--ease-soft), background var(--t) var(--ease);
+}
+.switch[aria-checked="true"] { background: var(--accent-strong); }
+.switch[aria-checked="true"]::after { transform: translateX(16px); }
+
+/* ---------- Сегмент-контрол и табы --------------------------------------- */
+.seg {
+  display: inline-flex; padding: 3px; gap: 2px;
+  background: var(--surface-2);
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+}
+.seg button {
+  height: 28px; padding: 0 13px;
+  border: 0; border-radius: var(--r-xs);
+  background: transparent; color: var(--text-soft);
+  font-size: 12.5px; font-weight: 500; cursor: pointer;
+  transition: background var(--t) var(--ease), color var(--t) var(--ease),
+              box-shadow var(--t) var(--ease), transform var(--t-press) var(--ease);
+  white-space: nowrap;
+}
+.seg button:hover { color: var(--ink); }
+.seg button:active { transform: translateY(1px); }
+.seg button.is-on {
+  background: var(--panel); color: var(--ink);
+  box-shadow: var(--sh-xs); font-weight: 600;
+}
+
+.tabs {
+  display: flex; gap: 2px; align-items: center;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto; scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tabs a, .tabs button {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 11px 13px; border: 0; background: none; cursor: pointer;
+  font-size: 13px; font-weight: 500; color: var(--text-soft);
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+  white-space: nowrap;
+  transition: color var(--t) var(--ease), border-color var(--t) var(--ease),
+              background var(--t) var(--ease);
+}
+.tabs a:hover, .tabs button:hover { color: var(--ink); }
+.tabs .is-on { color: var(--ink); border-bottom-color: var(--accent); font-weight: 600; }
+.tabs .cnt {
+  min-width: 19px; height: 18px; padding: 0 5px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--surface-2); color: var(--text-soft);
+  border-radius: var(--r-pill); font-size: 11px; font-weight: 600;
+  transition: background var(--t) var(--ease), color var(--t) var(--ease);
+}
+.tabs .is-on .cnt { background: var(--accent-bg); color: var(--accent); }
+
+/* ---------- Степпер (горизонтальный) ------------------------------------- */
+.flow { display: flex; align-items: flex-start; gap: 0; overflow-x: auto; padding: 4px 0; scrollbar-width: none; }
+.flow::-webkit-scrollbar { display: none; }
+.flow-step { display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 96px; flex: 1; position: relative; }
+.flow-step::before, .flow-step::after {
+  content: ""; position: absolute; top: 13px; height: 2px; background: var(--border-strong); z-index: 0;
+  transition: background var(--t-slow) var(--ease);
+}
+.flow-step::before { left: 0;   width: calc(50% - 15px); }
+.flow-step::after  { right: 0;  width: calc(50% - 15px); }
+.flow-step:first-child::before, .flow-step:last-child::after { display: none; }
+.flow-step.is-done::before, .flow-step.is-done::after,
+.flow-step.is-now::before { background: var(--accent); }
+.flow-dot {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--panel); border: 2px solid var(--border);
+  color: var(--text-faint); font-size: 11px; font-weight: 700;
+  position: relative; z-index: 1; flex: none;
+  transition: background var(--t-slow) var(--ease), border-color var(--t-slow) var(--ease),
+              color var(--t-slow) var(--ease), box-shadow var(--t-slow) var(--ease);
+}
+.flow-dot .ic { width: 14px; height: 14px; }
+.flow-step.is-done .flow-dot { background: var(--accent); border-color: var(--accent); color: #fff; }
+.flow-step.is-now  .flow-dot {
+  border-color: var(--accent); color: var(--accent); background: var(--panel);
+  box-shadow: 0 0 0 4px var(--accent-bg);
+}
+.flow-lbl {
+  font-size: 11.5px; text-align: center; color: var(--text-faint); line-height: 1.3; padding: 0 4px;
+  transition: color var(--t-slow) var(--ease);
+}
+.flow-step.is-done .flow-lbl, .flow-step.is-now .flow-lbl { color: var(--ink); font-weight: 500; }
+
+/* ---------- Вертикальный таймлайн ---------------------------------------- */
+.vtimeline { display: flex; flex-direction: column; gap: 2px; }
+.vt-item { display: grid; grid-template-columns: 28px 1fr; gap: 12px; position: relative; padding-bottom: 18px; }
+.vt-item:last-child { padding-bottom: 0; }
+.vt-item::before {
+  content: ""; position: absolute; left: 13px; top: 24px; bottom: 0; width: 2px;
+  background: var(--border);
+}
+.vt-item:last-child::before { display: none; }
+.vt-dot {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface-2); color: var(--text-soft);
+  border: 1px solid var(--border); z-index: 1;
+  transition: background var(--t-slow) var(--ease), color var(--t-slow) var(--ease),
+              border-color var(--t-slow) var(--ease);
+}
+.vt-dot .ic { width: 14px; height: 14px; }
+.vt-item.is-done .vt-dot { background: var(--success-bg); color: var(--success); border-color: transparent; }
+.vt-item.is-now  .vt-dot { background: var(--accent-bg); color: var(--accent); border-color: transparent; }
+.vt-item.is-wait .vt-dot { background: var(--surface); color: var(--text-faint); border-style: dashed; }
+.vt-body { min-width: 0; padding-top: 3px; }
+.vt-title { font-size: 13.5px; color: var(--ink); font-weight: 500; }
+.vt-meta { font-size: 12px; color: var(--text-faint); margin-top: 3px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+/* ---------- Пустое состояние --------------------------------------------- */
+.empty {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 10px; padding: 52px 24px; text-align: center;
+}
+.empty .ic { width: 30px; height: 30px; color: var(--text-faint); stroke-width: 1.3; }
+.empty-t { font-size: 14px; font-weight: 600; color: var(--ink); }
+.empty-d { font-size: 13px; color: var(--text-faint); max-width: 380px; }
+
+/* ---------- Прогресс-бар -------------------------------------------------- */
+.bar-track {
+  height: 6px; border-radius: var(--r-pill);
+  background: var(--surface-3); overflow: hidden; width: 100%;
+}
+.bar-fill {
+  height: 100%; border-radius: var(--r-pill);
+  background: var(--accent-strong);
+  transition: width .6s var(--ease), background var(--t) var(--ease);
+}
+.bar-fill.is-warn { background: var(--warn); }
+.bar-fill.is-danger { background: var(--danger); }
+.bar-fill.is-success { background: var(--success); }
+
+/* ---------- Дропдаун ------------------------------------------------------ */
+.menu-wrap { position: relative; }
+.menu {
+  position: absolute; z-index: 60; min-width: 220px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: var(--sh-lg);
+  padding: 6px;
+  /* Вход и выход симметричны: @starting-style даёт начальный кадр открытия,
+     а transition-behavior: allow-discrete у display доигрывает закрытие —
+     без него display:none обрывал переход и панель исчезала рывком. */
+  opacity: 1; transform: none;
+  transition: opacity var(--t) var(--ease), transform var(--t) var(--ease),
+              display var(--t) allow-discrete;
+}
+@starting-style {
+  .menu:not([hidden]) { opacity: 0; transform: translateY(-8px) scale(.98); }
+}
+.menu[hidden] {
+  display: none; opacity: 0; pointer-events: none;
+  transform: translateY(-8px) scale(.98);
+}
+.menu-r { right: 0; top: calc(100% + 8px); transform-origin: top right; }
+.menu-l { left: 0;  top: calc(100% + 8px); transform-origin: top left; }
+.menu-sec {
+  padding: 8px 10px 5px; font-size: 10px; font-weight: 600;
+  letter-spacing: .09em; text-transform: uppercase; color: var(--text-faint);
+}
+.menu-item {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  padding: 8px 10px; border: 0; border-radius: var(--r-xs);
+  background: none; color: var(--text); font-size: 13px; text-align: left;
+  cursor: pointer;
+  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease),
+              transform var(--t-press) var(--ease);
+}
+.menu-item:active { transform: translateY(1px); }
+.menu-item:hover { background: var(--surface-2); color: var(--ink); }
+.menu-item .ic { width: 16px; height: 16px; color: var(--text-faint); }
+.menu-item:hover .ic { color: var(--ink); }
+.menu-item.is-on { background: var(--accent-bg); color: var(--accent); }
+.menu-item.is-on .ic { color: var(--accent); }
+.menu-item.is-danger { color: var(--danger); }
+.menu-item.is-danger .ic { color: var(--danger); }
+.menu-item .tail { margin-left: auto; font-size: 11px; color: var(--text-faint); }
+.menu-sep { height: 1px; background: var(--border); margin: 6px 4px; }
+
+/* ---------- Тосты --------------------------------------------------------- */
+.toast-host {
+  position: fixed; right: 20px; bottom: 20px; z-index: 200;
+  display: flex; flex-direction: column; gap: 10px; align-items: flex-end;
+  pointer-events: none;
+}
+.toast {
+  display: flex; align-items: flex-start; gap: 10px;
+  min-width: 260px; max-width: 400px;
+  padding: 12px 14px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--r-sm);
+  box-shadow: var(--sh-lg);
+  font-size: 13px; color: var(--text);
+  animation: slideIn var(--t-slow) var(--ease) both;
+  pointer-events: auto;
+}
+.toast .ic { width: 17px; height: 17px; color: var(--accent); flex: none; margin-top: 1px; }
+.toast.is-success { border-left-color: var(--success); }
+.toast.is-success .ic { color: var(--success); }
+.toast.is-warn { border-left-color: var(--warn); }
+.toast.is-warn .ic { color: var(--warn); }
+.toast.is-danger { border-left-color: var(--danger); }
+.toast.is-danger .ic { color: var(--danger); }
+/* Уход тем же движением, что и приход, только назад */
+.toast.is-out { animation: slideIn var(--t-slow) var(--ease) reverse both; }
+.toast b { color: var(--ink); font-weight: 600; display: block; margin-bottom: 1px; }
+
+/* ---------- Строка очереди задач ----------------------------------------- */
+.qrow {
+  display: grid; grid-template-columns: 34px 1fr auto; gap: 12px; align-items: center;
+  padding: 13px 18px;
+  border-bottom: 1px dashed var(--border);
+  transition: background var(--t-fast) var(--ease);
+  text-decoration: none;
+}
+.qrow:last-child { border-bottom: 0; }
+.qrow:hover { background: var(--surface); }
+.qrow-ic {
+  width: 34px; height: 34px; border-radius: var(--r-sm);
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface-2); color: var(--text-soft);
+}
+.qrow-ic .ic { width: 17px; height: 17px; }
+.qrow.p-high .qrow-ic { background: var(--danger-bg); color: var(--danger); }
+.qrow.p-mid  .qrow-ic { background: var(--warn-bg);   color: var(--warn); }
+.qrow.p-low  .qrow-ic { background: var(--accent-bg); color: var(--accent); }
+.qrow-b { min-width: 0; display: flex; flex-direction: column; }
+.qrow-t { font-size: 13.5px; color: var(--ink); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.qrow-m { font-size: 12px; color: var(--text-faint); margin-top: 2px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.qrow-r { display: flex; align-items: center; gap: 10px; flex: none; min-width: 0; }
+
+/* ---------- Pipeline-строки ---------------------------------------------- */
+.pipe { display: flex; flex-direction: column; }
+.pipe-row { padding: 12px 18px; border-bottom: 1px dashed var(--border); }
+.pipe-row:last-child { border-bottom: 0; }
+.pipe-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+.pipe-lbl { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text); }
+.pipe-lbl .dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+.pipe-val { font-family: var(--mono); font-size: 13px; font-weight: 600; color: var(--ink); }
+
+/* ---------- Инфо-полоса --------------------------------------------------- */
+.note {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 13px; margin: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  font-size: 12.5px; color: var(--text-soft);
+}
+.note .ic { width: 16px; height: 16px; color: var(--text-faint); flex: none; }
+.note b { color: var(--ink); font-weight: 600; }
+.note-accent { background: var(--accent-bg); border-color: transparent; color: var(--accent); }
+.note-accent .ic { color: var(--accent); }
+.note-warn { background: var(--warn-bg); border-color: transparent; color: var(--warn); }
+.note-warn .ic { color: var(--warn); }
+.note-danger { background: var(--danger-bg); border-color: transparent; color: var(--danger); }
+.note-danger .ic { color: var(--danger); }
+
+/* ---------- Флаг-чип страны ---------------------------------------------- */
+.flagchip {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 16px; border-radius: 3px; flex: none;
+  background: var(--surface-2); font-size: 11px; line-height: 1;
+  overflow: hidden; user-select: none;
+}
+/* ---------- Логотип компании --------------------------------------------- */
+.logo-sq {
+  width: 24px; height: 24px; flex: none;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 6px; overflow: hidden;
+  background: var(--logo-bg);
+  box-shadow: inset 0 0 0 1px var(--border-strong);
+}
+.logo-sq img { width: 100%; height: 100%; object-fit: contain; display: block; padding: 1px; }
+/* запасной вариант, когда знака нет: буквы вместо картинки */
+.logo-sq.is-text {
+  background: var(--surface-2); color: var(--text-soft);
+  font-size: 9.5px; font-weight: 700; letter-spacing: .02em;
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+.logo-sq.lg { width: 34px; height: 34px; border-radius: 9px; }
+.logo-sq.lg.is-text { font-size: 12px; }
+.logo-sq.sm { width: 20px; height: 20px; border-radius: 5px; }
+.logo-sq.sm.is-text { font-size: 8.5px; }
+
+.org-cell { display: flex; align-items: center; gap: 9px; min-width: 0; }
+.org-cell .n { color: var(--ink); font-weight: 500; white-space: nowrap; }
+.org-cell .j { color: var(--text-faint); font-size: 11.5px; white-space: nowrap; }
+
+/* ---------- Разделитель / прочее ----------------------------------------- */
+.rule { height: 1px; background: var(--border); border: 0; margin: 0; }
+.dot-sep { width: 3px; height: 3px; border-radius: 50%; background: var(--text-faint); display: inline-block; flex: none; }
+.kbd {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 19px; min-width: 19px; padding: 0 5px;
+  border: 1px solid var(--border-strong); border-radius: 5px;
+  background: var(--surface); color: var(--text-faint);
+  font-size: 10.5px; font-weight: 600; font-family: var(--mono);
+}
